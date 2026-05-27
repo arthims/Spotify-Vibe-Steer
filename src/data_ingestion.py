@@ -21,6 +21,10 @@ def ingest_data():
     # Lowercase column names for easier access
     df.columns = [col.lower() for col in df.columns]
     
+    # CRITICAL FIX for Streamlit Cloud: Drop massive text columns to prevent Out-Of-Memory (OOM) crashes
+    heavy_cols = ['reviews_list', 'menu_item', 'dish_liked', 'url', 'phone', 'address']
+    df = df.drop(columns=[col for col in heavy_cols if col in df.columns], errors='ignore')
+    
     # Ensure critical columns exist. Let's use flexible names.
     name_col = 'name' if 'name' in df.columns else 'restaurant name' if 'restaurant name' in df.columns else None
     loc_col = 'location' if 'location' in df.columns else 'city' if 'city' in df.columns else None
