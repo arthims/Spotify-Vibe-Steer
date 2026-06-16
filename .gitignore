@@ -1,15 +1,30 @@
 # Virtual Environments
 venv/
 env/
+src/venv/
+
+# Secret Keys - NEVER commit
 .env
 
-# Data
+# Large Data Files
 data/cleaned_zomato.parquet
+data/phase2/
 
 # Python Cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
 # IDEs
 .vscode/
 .idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
