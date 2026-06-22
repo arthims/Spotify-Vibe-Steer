@@ -7,13 +7,10 @@ import calendar
 import time
 
 def get_live_date_range(period_str):
+    import re
     today = datetime.date.today()
-    if "1" in period_str:
-        months = 1
-    elif "2" in period_str:
-        months = 2
-    else:
-        months = 3
+    match = re.search(r'\d+', period_str)
+    months = int(match.group()) if match else 1
         
     year = today.year
     month = today.month - months
@@ -40,6 +37,23 @@ def get_live_date_range(period_str):
     today_str = f"{format_day(today.day)} {today.strftime('%B %Y').lower()}"
     past_str = f"{format_day(past_date.day)} {past_date.strftime('%B %Y').lower()}"
     return f"{today_str} to {past_str}"
+
+def format_custom_date_range(from_date, to_date):
+    def format_day(d):
+        if d == 22:
+            return "22"
+        elif d == 23:
+            return "23rd"
+        else:
+            if 11 <= d <= 13:
+                suffix = "th"
+            else:
+                suffix = {1: "st", 2: "nd", 3: "rd"}.get(d % 10, "th")
+            return f"{d}{suffix}"
+            
+    from_str = f"{format_day(from_date.day)} {from_date.strftime('%B %Y').lower()}"
+    to_str = f"{format_day(to_date.day)} {to_date.strftime('%B %Y').lower()}"
+    return f"{from_str} to {to_str}"
 
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
@@ -69,7 +83,9 @@ st.markdown("""
 
     /* Main header */
     .main-header {
-        background: linear-gradient(135deg, #1DB954 0%, #158a3e 100%);
+        background: #181818;
+        border: 1px solid #282828;
+        border-left: 5px solid #1DB954;
         padding: 20px 28px;
         border-radius: 16px;
         margin-bottom: 24px;
@@ -77,8 +93,8 @@ st.markdown("""
         align-items: center;
         gap: 16px;
     }
-    .main-header h1 { color: #000 !important; font-size: 28px; font-weight: 800; margin: 0; }
-    .main-header p  { color: rgba(0,0,0,0.75) !important; margin: 4px 0 0; font-size: 14px; }
+    .main-header h1 { color: #FFFFFF !important; font-size: 28px; font-weight: 800; margin: 0; }
+    .main-header p  { color: #B3B3B3 !important; margin: 4px 0 0; font-size: 14px; }
 
     /* Track cards */
     .track-card {
@@ -171,23 +187,21 @@ st.markdown("""
 <div class="main-header">
   <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" width="44"/>
   <div>
-    <h1>Review Discovery</h1>
+    <h1>Spotify Review Discovery</h1>
   </div>
 </div>
 """, unsafe_allow_html=True)
 
 # ─── Dashboard Helper ─────────────────────────────────────────────────────────
-def render_dashboard(selected_period):
-    date_range = get_live_date_range(selected_period)
-    
+def render_dashboard(date_range):
     st.markdown(f"### 📊 Review Discovery Analytics")
-    st.markdown(f"Analysis Period: **{date_range}** ({selected_period}) | Limit: **1,500 reviews**")
+    st.markdown(f"Analysis Period: **{date_range}**")
     
     col_dash1, col_dash2 = st.columns([8, 2])
     with col_dash1:
         st.caption("Analyzing user complaints, frustrations, and unmet needs focused on Music Discovery & Repetitive Loops.")
     with col_dash2:
-        if st.button("🔄 Change Period", key=f"reset_analysis_btn_{selected_period}", use_container_width=True):
+        if st.button("🔄 Change Period", key="reset_analysis_btn", use_container_width=True):
             st.session_state.analyzed = False
             st.rerun()
             
@@ -241,8 +255,9 @@ def render_dashboard(selected_period):
             "Ads & Curation Restraints (Free Tier)": ["ads", "ad", "free", "premium", "paywall"]
         }
         
-        sel_topic = st.selectbox("🎯 Filter by Problem Topic", list(topic_options.keys()), key=f"topic_sel_{selected_period}")
-        search_kw = st.text_input("🔍 Or search custom keywords (e.g. 'carplay', 'lyrics', 'slow'):", key=f"search_kw_{selected_period}").strip().lower()
+        safe_key = "".join(c for c in date_range if c.isalnum())
+        sel_topic = st.selectbox("🎯 Filter by Problem Topic", list(topic_options.keys()), key=f"topic_sel_{safe_key}")
+        search_kw = st.text_input("🔍 Or search custom keywords (e.g. 'carplay', 'lyrics', 'slow'):", key=f"search_kw_{safe_key}").strip().lower()
         
         df_display = df_filtered.copy()
         keywords_to_filter = topic_options[sel_topic]
@@ -275,38 +290,52 @@ tab1, tab2 = st.tabs(["📅 Time Period", "📊 Review Discovery Analytics"])
 with tab1:
     if not st.session_state.get("analyzed", False):
         st.markdown("### 📅 Time Period Selection")
-        st.caption("Configure the time window and scrape parameters to run the live review analysis.")
+        st.caption("Configure the time window to run the review discovery analysis.")
         
-        selected_period = st.selectbox(
-            "📅 Select Time Period",
-            ["last 1 month", "Last 2 months", "Last 3 months"],
-            key="time_period_dropdown"
+        st.markdown("**Choose selector format:**")
+        selection_mode = st.radio(
+            "Selector Mode",
+            ["Preset Window (Dropdown)", "Custom Window (Calendar)"],
+            horizontal=True,
+            label_visibility="collapsed",
+            key="time_selection_mode"
         )
         
-        range_str = get_live_date_range(selected_period)
+        if selection_mode == "Preset Window (Dropdown)":
+            selected_period = st.selectbox(
+                "📅 Select Preset Window",
+                [
+                    "last 1 month",
+                    "last 2 months",
+                    "last 3 months",
+                    "last 4 months",
+                    "last 5 months",
+                    "last 6 months"
+                ],
+                key="time_period_dropdown"
+            )
+            range_str = get_live_date_range(selected_period)
+        else:
+            st.markdown("📅 **Select Custom Window**")
+            col_date1, col_date2 = st.columns(2)
+            with col_date1:
+                from_date = st.date_input(
+                    "From Date",
+                    value=datetime.date.today() - datetime.timedelta(days=30),
+                    key="from_date_picker"
+                )
+            with col_date2:
+                to_date = st.date_input(
+                    "To Date",
+                    value=datetime.date.today(),
+                    key="to_date_picker"
+                )
+            range_str = format_custom_date_range(from_date, to_date)
+            
         st.markdown(f"""
         <div style="background:#181818; border: 1px solid #282828; padding:16px 20px; border-radius:12px; margin-top:10px; margin-bottom:20px;">
             <div style="font-size:12px; color:#B3B3B3; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Live Date Range</div>
             <div style="font-size:18px; color:#1DB954; font-weight:700; margin-top:4px;">{range_str}</div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown(f"""
-        <div style="background: rgba(29,185,84,0.05); border: 1px solid rgba(29,185,84,0.2); padding:16px; border-radius:8px; margin-bottom:24px;">
-            <div style="font-size:14px; font-weight:600; color:#1DB954; display:flex; align-items:center; gap:8px;">
-                ⚙️ Ingestion Parameters
-            </div>
-            <ul style="font-size:13px; color:#E0E0E0; margin-top:8px; padding-left:20px; margin-bottom:0;">
-                <li><b>Volume Limit:</b> Capped at 1,500 reviews per click</li>
-                <li><b>Active Sources:</b> Spotify Help Forum, Ongoing Issues Tracking, Feature Ideas</li>
-                <li><b>Source URLs:</b>
-                    <ul>
-                        <li><a href="https://community.spotify.com/t5/Help/ct-p/Help" target="_blank" style="color:#1DB954;">community.spotify.com/t5/Help</a></li>
-                        <li><a href="https://community.spotify.com/t5/Ongoing-Issues/tkb-p/Ongoing_Issues" target="_blank" style="color:#1DB954;">community.spotify.com/t5/Ongoing-Issues</a></li>
-                        <li><a href="https://community.spotify.com/t5/Ideas/ct-p/newideas" target="_blank" style="color:#1DB954;">community.spotify.com/t5/Ideas</a></li>
-                    </ul>
-                </li>
-            </ul>
         </div>
         """, unsafe_allow_html=True)
         
@@ -322,23 +351,23 @@ with tab1:
             time.sleep(0.8)
             
             progress_bar.progress(0.4)
-            status_text.markdown("🔍 **Scanning Help Forum:** `https://community.spotify.com/t5/Help/ct-p/Help`...")
+            status_text.markdown("🔍 **Scanning Spotify Forums for Help & Support topics...**")
             time.sleep(0.8)
             
             progress_bar.progress(0.6)
-            status_text.markdown("⚠️ **Scanning Ongoing Issues:** `https://community.spotify.com/t5/Ongoing-Issues/tkb-p/Ongoing_Issues`...")
+            status_text.markdown("⚠️ **Parsing Ongoing Issues Tracker...**")
             time.sleep(0.8)
             
             progress_bar.progress(0.8)
-            status_text.markdown("💡 **Scanning Feature Ideas:** `https://community.spotify.com/t5/Ideas/ct-p/newideas`...")
+            status_text.markdown("💡 **Summarizing user feature requests & feedback...**")
             time.sleep(0.8)
             
             progress_bar.progress(1.0)
-            status_text.markdown("📊 **Analysis complete! Ingested 1,500 reviews (limit reached). Filtering relevant discovery complaints...**")
+            status_text.markdown("📊 **Analysis complete! Classifying relevant discovery complaints...**")
             time.sleep(0.6)
             
             st.session_state.analyzed = True
-            st.session_state.last_analyzed_period = selected_period
+            st.session_state.last_analyzed_period = range_str
             st.rerun()
     else:
         render_dashboard(st.session_state.get("last_analyzed_period", "last 1 month"))
