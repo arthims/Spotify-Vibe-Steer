@@ -420,14 +420,8 @@ with tab2:
     if os.path.exists(csv_path):
         df_filtered = pd.read_csv(csv_path)
         
-        # 1. Metric Row
-        m_col1, m_col2, m_col3 = st.columns(3)
-        with m_col1:
-            st.metric("Total Consolidated Reviews", "2,412")
-        with m_col2:
-            st.metric("Discovery-Relevant Reviews", str(len(df_filtered)), delta="Filtered Focus")
-        with m_col3:
-            st.metric("Irrelevant Reviews Ignored", "1,797", delta="-74.5%", delta_color="inverse")
+        # 1. Metric Row (Focused strictly on discovery-relevant reviews)
+        st.metric("Consolidated Discovery-Relevant Reviews", str(len(df_filtered)))
             
         st.markdown("---")
         
