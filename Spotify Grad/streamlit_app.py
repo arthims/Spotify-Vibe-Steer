@@ -280,65 +280,11 @@ if "messages" not in st.session_state:
 if "trigger" not in st.session_state:
     st.session_state.trigger = None
 
-# ─── Sidebar ───────────────────────────────────────────────────────────────────
-with st.sidebar:
-    col_logo, col_title = st.columns([1, 4])
-    with col_logo:
-        st.image("https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg", width=40)
-    with col_title:
-        st.markdown("### Spotify Vibe Steer")
+# ─── Default Filters ───────────────────────────────────────────────────────────
+f_lang = ""
+f_genre = ""
+f_era = ""
 
-    st.markdown("---")
-    st.markdown("**🎛️ Recommendation Filters**")
-    st.caption("Pinpoint the perfect top 3 songs for you")
-
-    sel_lang  = st.selectbox("🌐 Language",    ["Any", "Tamil", "Malayalam", "Hindi", "English", "Telugu"])
-    sel_genre = st.selectbox("🎸 Genre",       ["Any", "Pop", "Folk", "Jazz", "Melody"])
-    sel_era   = st.selectbox("🕐 Time Period", ["Any", "Latest (2020s)", "Classic / Old"])
-
-    era_map = {"Any": "", "Latest (2020s)": "Latest", "Classic / Old": "Old"}
-    f_lang  = "" if sel_lang  == "Any" else sel_lang
-    f_genre = "" if sel_genre == "Any" else sel_genre
-    f_era   = era_map[sel_era]
-
-    st.markdown("---")
-    st.markdown("**⚡ Quick Categories**")
-
-    PILLS = [
-        ("🎵 Latest Tamil",    "Tamil",    "",       "Latest"),
-        ("🎵 Latest Malayalam","Malayalam","",       "Latest"),
-        ("🎵 Latest Hindi",    "Hindi",    "",       "Latest"),
-        ("🎵 Latest English",  "English",  "",       "Latest"),
-        ("🎵 Latest Telugu",   "Telugu",   "",       "Latest"),
-        ("🎷 Jazz",            "English",  "Jazz",   ""),
-        ("🎤 Pop",             "",         "Pop",    ""),
-        ("🪗 Folk",            "",         "Folk",   ""),
-        ("🎼 Melody",          "",         "Melody", ""),
-        ("🪗 Folk Hindi",      "Hindi",    "Folk",   ""),
-        ("🪗 Folk Tamil",      "Tamil",    "Folk",   ""),
-        ("🪗 Folk Malayalam",  "Malayalam","Folk",   ""),
-        ("🪗 Folk English",    "English",  "Folk",   ""),
-        ("🪗 Folk Telugu",     "Telugu",   "Folk",   ""),
-        ("🎼 Melody Tamil",    "Tamil",    "Melody", ""),
-        ("🎼 Melody Telugu",   "Telugu",   "Melody", ""),
-        ("🎼 Melody Malayalam","Malayalam","Melody", ""),
-        ("🎼 Melody Hindi",    "Hindi",    "Melody", ""),
-        ("🎼 Melody English",  "English",  "Melody", ""),
-    ]
-
-    cols = st.columns(2)
-    for i, (label, lang, genre, era) in enumerate(PILLS):
-        with cols[i % 2]:
-            if st.button(label, key=f"pill_{i}", use_container_width=True):
-                parts = [x for x in [era.lower() if era else "", lang, genre.lower() if genre else ""] if x]
-                auto_text = f"Recommend me {' '.join(parts)} songs"
-                st.session_state.trigger = (auto_text, lang, genre, era)
-
-    st.markdown("---")
-    if st.button("🎵 Recommend for Me", use_container_width=True, key="main_recommend"):
-        parts = [x for x in [f_era.lower() if f_era else "", f_lang, f_genre.lower() if f_genre else ""] if x]
-        auto_text = f"Recommend me {' '.join(parts) if parts else 'great'} songs"
-        st.session_state.trigger = (auto_text, f_lang, f_genre, f_era)
 
 # Helper function to process recommendation request and append directly to session history
 def run_and_append_message(user_text, lang, genre, era):
@@ -374,8 +320,7 @@ st.markdown("""
 <div class="main-header">
   <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" width="44"/>
   <div>
-    <h1>Spotify Vibe Steer</h1>
-    <p>Tell me your mood — I'll find the perfect top 3 tracks for you</p>
+    <h1>Review Discovery</h1>
   </div>
 </div>
 """, unsafe_allow_html=True)
