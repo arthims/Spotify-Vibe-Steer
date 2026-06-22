@@ -223,7 +223,90 @@ def render_dashboard(date_range):
             
         st.markdown("---")
         
-        # Q&A Section
+        # Charts Row (Graphs on top)
+        c_col1, c_col2 = st.columns(2)
+        with c_col1:
+            st.markdown("#### 📱 Discovery Feedback by Platform")
+            plat_counts = df_filtered["Platform"].value_counts().reset_index()
+            plat_counts.columns = ["Platform", "Reviews"]
+            st.bar_chart(plat_counts.set_index("Platform"))
+            
+        with c_col2:
+            st.markdown("#### ⭐ Rating Distribution (App/Play Store)")
+            df_rated = df_filtered[df_filtered["Rating"].notna()]
+            if not df_rated.empty:
+                df_rated["Rating"] = df_rated["Rating"].astype(int)
+                rating_counts = df_rated["Rating"].value_counts().sort_index().reset_index()
+                rating_counts.columns = ["Stars", "Reviews"]
+                st.bar_chart(rating_counts.set_index("Stars"))
+            else:
+                st.info("No rating data available (Reddit/Forums/Social Media discussions are qualitative).")
+                
+        st.markdown("---")
+        
+        # Predefined Problem Explorer & Search (Explorer in the middle)
+        st.markdown("#### 🔍 Interactive Review Explorer")
+        
+        topic_options = {
+            "All Relevant Reviews": [],
+            "Smart Shuffle & Rec Loops": ["shuffle", "smart shuffle", "repeat", "same", "loop"],
+            "UI/UX Curation Changes (Heart Button, Widgets)": ["heart", "plus", "widget", "layout", "button"],
+            "Content Clutter (Podcasts/Audiobooks)": ["podcast", "audiobook", "show", "bloat"],
+            "Ads & Curation Restraints (Free Tier)": ["ads", "ad", "free", "premium", "paywall"]
+        }
+        
+        safe_key = "".join(c for c in date_range if c.isalnum())
+        
+        default_topic = st.session_state.get("selected_topic", "All Relevant Reviews")
+        try:
+            topic_index = list(topic_options.keys()).index(default_topic)
+        except ValueError:
+            topic_index = 0
+            
+        default_kw = st.session_state.get("search_kw", "")
+        
+        sel_topic = st.selectbox(
+            "🎯 Filter by Problem Topic", 
+            list(topic_options.keys()), 
+            index=topic_index,
+            key=f"topic_sel_{safe_key}"
+        )
+        search_kw = st.text_input(
+            "🔍 Or search custom keywords (e.g. 'carplay', 'lyrics', 'slow'):", 
+            value=default_kw,
+            key=f"search_kw_{safe_key}"
+        ).strip().lower()
+        
+        # Sync back to session state so changing them interactively persists
+        st.session_state.selected_topic = sel_topic
+        st.session_state.search_kw = search_kw
+        
+        df_display = df_filtered.copy()
+        keywords_to_filter = topic_options[sel_topic]
+        if keywords_to_filter:
+            df_display = df_display[df_display["Review_Text"].str.lower().str.contains('|'.join(keywords_to_filter), na=False)]
+            
+        if search_kw:
+            df_display = df_display[df_display["Review_Text"].str.lower().str.contains(search_kw, na=False)]
+            
+        st.caption(f"Showing {len(df_display)} matching reviews out of {len(df_filtered)}")
+        
+        for idx, row in df_display.head(20).iterrows():
+            stars_badge = f"⭐ {int(row['Rating'])} Stars" if pd.notna(row['Rating']) else "💬 Discussion"
+            plat_badge = row['Platform']
+            st.markdown(f"""
+            <div style="background:#181818; border: 1px solid #282828; padding:12px 16px; border-radius:8px; margin-bottom:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <span style="font-size:12px; color:#1DB954; font-weight:600;">{plat_badge}</span>
+                    <span style="font-size:12px; color:#B3B3B3;">{stars_badge}</span>
+                </div>
+                <div style="font-size:13px; color:#FFFFFF; line-height:1.4;">"{row['Review_Text']}"</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        st.markdown("---")
+        
+        # Q&A Section (Questions at the very bottom)
         st.markdown("### 📋 Product Discovery Questions & Answers")
         st.caption(f"Synthesized from 1,500 ingested reviews matching period: **{date_range}**")
         
@@ -288,67 +371,6 @@ def render_dashboard(date_range):
             </blockquote>
         </div>
         """, unsafe_allow_html=True)
-        
-        st.markdown("---")
-        
-        # Charts Row
-        c_col1, c_col2 = st.columns(2)
-        with c_col1:
-            st.markdown("#### 📱 Discovery Feedback by Platform")
-            plat_counts = df_filtered["Platform"].value_counts().reset_index()
-            plat_counts.columns = ["Platform", "Reviews"]
-            st.bar_chart(plat_counts.set_index("Platform"))
-            
-        with c_col2:
-            st.markdown("#### ⭐ Rating Distribution (App/Play Store)")
-            df_rated = df_filtered[df_filtered["Rating"].notna()]
-            if not df_rated.empty:
-                df_rated["Rating"] = df_rated["Rating"].astype(int)
-                rating_counts = df_rated["Rating"].value_counts().sort_index().reset_index()
-                rating_counts.columns = ["Stars", "Reviews"]
-                st.bar_chart(rating_counts.set_index("Stars"))
-            else:
-                st.info("No rating data available (Reddit/Forums/Social Media discussions are qualitative).")
-                
-        st.markdown("---")
-        
-        # Predefined Problem Explorer & Search
-        st.markdown("#### 🔍 Interactive Review Explorer")
-        
-        topic_options = {
-            "All Relevant Reviews": [],
-            "Smart Shuffle & Rec Loops": ["shuffle", "smart shuffle", "repeat", "same", "loop"],
-            "UI/UX Curation Changes (Heart Button, Widgets)": ["heart", "plus", "widget", "layout", "button"],
-            "Content Clutter (Podcasts/Audiobooks)": ["podcast", "audiobook", "show", "bloat"],
-            "Ads & Curation Restraints (Free Tier)": ["ads", "ad", "free", "premium", "paywall"]
-        }
-        
-        safe_key = "".join(c for c in date_range if c.isalnum())
-        sel_topic = st.selectbox("🎯 Filter by Problem Topic", list(topic_options.keys()), key=f"topic_sel_{safe_key}")
-        search_kw = st.text_input("🔍 Or search custom keywords (e.g. 'carplay', 'lyrics', 'slow'):", key=f"search_kw_{safe_key}").strip().lower()
-        
-        df_display = df_filtered.copy()
-        keywords_to_filter = topic_options[sel_topic]
-        if keywords_to_filter:
-            df_display = df_display[df_display["Review_Text"].str.lower().str.contains('|'.join(keywords_to_filter), na=False)]
-            
-        if search_kw:
-            df_display = df_display[df_display["Review_Text"].str.lower().str.contains(search_kw, na=False)]
-            
-        st.caption(f"Showing {len(df_display)} matching reviews out of {len(df_filtered)}")
-        
-        for idx, row in df_display.head(20).iterrows():
-            stars_badge = f"⭐ {int(row['Rating'])} Stars" if pd.notna(row['Rating']) else "💬 Discussion"
-            plat_badge = row['Platform']
-            st.markdown(f"""
-            <div style="background:#181818; border: 1px solid #282828; padding:12px 16px; border-radius:8px; margin-bottom:8px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                    <span style="font-size:12px; color:#1DB954; font-weight:600;">{plat_badge}</span>
-                    <span style="font-size:12px; color:#B3B3B3;">{stars_badge}</span>
-                </div>
-                <div style="font-size:13px; color:#FFFFFF; line-height:1.4;">"{row['Review_Text']}"</div>
-            </div>
-            """, unsafe_allow_html=True)
     else:
         st.warning(f"Could not load review analytics. Please make sure the consolidated file exists at {csv_path}")
 
@@ -404,6 +426,36 @@ if not st.session_state.get("analyzed", False):
     </div>
     """, unsafe_allow_html=True)
     
+    st.markdown("### 🔍 Interactive Review Explorer")
+    topic_options = {
+        "All Relevant Reviews": [],
+        "Smart Shuffle & Rec Loops": ["shuffle", "smart shuffle", "repeat", "same", "loop"],
+        "UI/UX Curation Changes (Heart Button, Widgets)": ["heart", "plus", "widget", "layout", "button"],
+        "Content Clutter (Podcasts/Audiobooks)": ["podcast", "audiobook", "show", "bloat"],
+        "Ads & Curation Restraints (Free Tier)": ["ads", "ad", "free", "premium", "paywall"]
+    }
+    
+    default_topic = st.session_state.get("selected_topic", "All Relevant Reviews")
+    try:
+        topic_index = list(topic_options.keys()).index(default_topic)
+    except ValueError:
+        topic_index = 0
+        
+    default_kw = st.session_state.get("search_kw", "")
+    
+    sel_topic = st.selectbox(
+        "🎯 Filter by Problem Topic", 
+        list(topic_options.keys()), 
+        index=topic_index,
+        key="initial_topic_sel"
+    )
+    
+    search_kw = st.text_input(
+        "🔍 Or search custom keywords (e.g. 'carplay', 'lyrics', 'slow'):", 
+        value=default_kw,
+        key="initial_search_kw"
+    ).strip().lower()
+    
     if st.button("Analyse", key="analyse_button", use_container_width=True):
         progress_bar = st.progress(0.0)
         status_text = st.empty()
@@ -431,6 +483,8 @@ if not st.session_state.get("analyzed", False):
         status_text.markdown("📊 **Analysis complete! Classifying relevant discovery complaints...**")
         time.sleep(0.6)
         
+        st.session_state.selected_topic = sel_topic
+        st.session_state.search_kw = search_kw
         st.session_state.analyzed = True
         st.session_state.last_analyzed_period = range_str
         st.rerun()
