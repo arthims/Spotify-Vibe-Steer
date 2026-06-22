@@ -326,12 +326,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ─── Tabs Setup (Phase 6 implementation) ──────────────────────────────────────
-tab1, tab2 = st.tabs(["💬 Vibe Steer Chat", "📊 Review Discovery Analytics"])
+tab1, tab2 = st.tabs(["Time Period", "📊 Review Discovery Analytics"])
 
 with tab1:
-    # Welcome message (first load only)
-    if not st.session_state.messages:
-        st.info("👋 Hi! I'm your **AI Music Curator**. Type your mood below or use the sidebar filters. Try: *'I want chill Tamil melodies'* or *'Give me energetic Hindi songs'*")
+    # Dropdown for time period selection
+    selected_period = st.selectbox(
+        "Select Time Period",
+        ["last 1 month", "last 2 months", "last 3 months"],
+        key="time_period_dropdown"
+    )
 
     # Render chat history
     for msg in st.session_state.messages:
