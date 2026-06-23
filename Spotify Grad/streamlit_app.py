@@ -240,6 +240,13 @@ def render_dashboard(date_range):
     if os.path.exists(csv_path):
         df_filtered = pd.read_csv(csv_path)
         
+        # Dynamically filter reviews by chosen date range
+        start_date = st.session_state.get("start_date")
+        end_date = st.session_state.get("end_date")
+        if start_date and end_date:
+            df_filtered["Parsed_Date"] = pd.to_datetime(df_filtered["Date"]).dt.date
+            df_filtered = df_filtered[(df_filtered["Parsed_Date"] >= start_date) & (df_filtered["Parsed_Date"] <= end_date)]
+        
         # Metric Row
         m_col1, m_col2 = st.columns(2)
         with m_col1:
@@ -376,8 +383,10 @@ def render_dashboard(date_range):
             <h4 style="color:#1DB954; font-size:16px; margin-bottom:4px;">Which user segments experience different discovery challenges?</h4>
             <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:16px;">
                 <b>Premium vs. Free Tier Segments:</b> Analysis reveals two main user segments experiencing different curation and discovery barriers:<br/>
-                1. 💎 <b>Premium Tier Users (n=1,118)</b>: Complain about advanced curation failures (avg rating <b>2.05</b>). They pay for customized, clean music streaming but face repetitive Discover Weekly shuffles, failed AI DJ intent mapping, and unwanted podcast/audiobook clutter over their music-only feeds.<br/>
-                2. 🆓 <b>Free Tier Users (n=951)</b>: Complain about restricted discovery controls (avg rating <b>2.05</b>). They are forced into smart shuffle loops, face ad density that disrupts music discovery, and lack basic queue organization controls.<br/><br/>
+                1. 💎 <b>Premium Tier Users</b>: Complain about advanced curation failures (avg rating <b>2.05</b>). They pay for customized, clean music streaming but face repetitive Discover Weekly shuffles, failed AI DJ intent mapping, and unwanted podcast/audiobooks cluttering their feed.<br/>
+                2. 🆓 <b>Free Tier Users</b>: Complain about restricted discovery controls (avg rating <b>2.05</b>). Specifically, they face:<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;• <b>Forced Playback Restrictions:</b> Unable to turn off smart shuffle or play tracks on-demand, trapping them in recommendation loops.<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;• <b>Paywalled Curation Controls:</b> Basic functions like rewinding, skipping, or organizing playlist queues are locked behind paywalls, forcing them to repeat content.<br/><br/>
                 <b>Who Faces More Problems:</b> Both segments experience high levels of dissatisfaction (avg rating <b>2.05</b> for both), but they face different challenges: Premium users suffer from <b>algorithmic stagnation and content clutter</b> in their curation, while Free users face <b>forced shuffler restrictions and playback limitations</b> that block organic discovery.
             </p>
         </div>
@@ -512,6 +521,17 @@ if not st.session_state.get("analyzed", False):
         st.session_state.search_kw = search_kw
         st.session_state.analyzed = True
         st.session_state.last_analyzed_period = range_str
+        
+        import re
+        if selection_mode == "Preset Window (Dropdown)":
+            match = re.search(r'\d+', selected_period)
+            months = int(match.group()) if match else 1
+            st.session_state.end_date = datetime.date.today()
+            st.session_state.start_date = st.session_state.end_date - datetime.timedelta(days=30 * months)
+        else:
+            st.session_state.start_date = from_date
+            st.session_state.end_date = to_date
+            
         st.rerun()
 else:
     render_dashboard(st.session_state.get("last_analyzed_period", "last 1 month"))
