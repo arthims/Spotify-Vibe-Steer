@@ -375,12 +375,10 @@ def render_dashboard(date_range):
         <div>
             <h4 style="color:#1DB954; font-size:16px; margin-bottom:4px;">Which user segments experience different discovery challenges?</h4>
             <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:16px;">
-                <b>Regional Feed & Platform Segments:</b> Analysis reveals four primary user segments facing unique curation barriers in India:<br/>
-                1. 🎵 <b>Punjabi Pop & Fusion Fans (High Curation Seeker)</b>: Face the most severe discovery problems (lowest average rating of <b>2.00</b>), complaining about algorithms looping the same safe tracks.<br/>
-                2. 🎬 <b>Bollywood & Hindi Pop Enthusiasts (Mainstream Listener)</b>: High-volume segment (avg rating <b>2.06</b>) experiencing forced smart shuffle issues and playlist queue constraints.<br/>
-                3. 🎧 <b>South Indian Melodies Listeners (Tamil/Telugu/Malayalam Curation)</b>: Largest volume segment (avg rating <b>2.07</b>) complaining about podcast/audiobook clutter interrupting their music feeds.<br/>
-                4. 📱 <b>App Store & Play Store Mobile Streamers</b>: Mobile users experiencing shuffler crashes, queue bugs, and repetitive recommendation mixes.<br/><br/>
-                <b>Who Faces More Problems:</b> The <b>Punjabi Pop & Indian Fusion segment</b> faces the most severe issues (lowest average rating of <b>2.00</b>), and from a feature standpoint, users of the <b>Discover Weekly Playlist</b> (avg rating <b>1.88</b>) and <b>Playlist Queue Control</b> (avg rating <b>1.98</b>) face the highest rate of critical recommendation blocks.
+                <b>Premium vs. Free Tier Segments:</b> Analysis reveals two main user segments experiencing different curation and discovery barriers:<br/>
+                1. 💎 <b>Premium Tier Users (n=1,118)</b>: Complain about advanced curation failures (avg rating <b>2.05</b>). They pay for customized, clean music streaming but face repetitive Discover Weekly shuffles, failed AI DJ intent mapping, and unwanted podcast/audiobook clutter over their music-only feeds.<br/>
+                2. 🆓 <b>Free Tier Users (n=951)</b>: Complain about restricted discovery controls (avg rating <b>2.05</b>). They are forced into smart shuffle loops, face ad density that disrupts music discovery, and lack basic queue organization controls.<br/><br/>
+                <b>Who Faces More Problems:</b> Both segments experience high levels of dissatisfaction (avg rating <b>2.05</b> for both), but they face different challenges: Premium users suffer from <b>algorithmic stagnation and content clutter</b> in their curation, while Free users face <b>forced shuffler restrictions and playback limitations</b> that block organic discovery.
             </p>
         </div>
 
