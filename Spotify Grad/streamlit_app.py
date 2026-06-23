@@ -317,7 +317,7 @@ def render_dashboard(date_range):
         if search_kw:
             df_display = df_display[df_display["Review_Text"].str.lower().str.contains(search_kw, na=False)]
             
-        st.caption("listing top 20 reviews from various platform. Now from problem statement containing the below questions")
+        st.caption("listing top 20 reviews from various platform.")
         
         # Shuffle/mix the matching reviews to show a mixture of all categories/platforms
         df_show = df_display.sample(frac=1, random_state=42).reset_index(drop=True) if len(df_display) > 0 else df_display
@@ -346,62 +346,49 @@ def render_dashboard(date_range):
         st.markdown(f"""
         <div style="margin-top:16px;">
             <h4 style="color:#1DB954; font-size:16px; margin-bottom:4px;">Why do users struggle to discover new music?</h4>
-            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:8px;">
-                <b>Curation Loops and Failed Exploration:</b> Music discovery algorithms (like Release Radar, Daily Mixes, and AI DJ) fail to search or find new tracks, looping the same music and safe tracks repeatedly (such as loops of popular tracks by Arijit Singh or Diljit Dosanjh) instead of recommending new local or independent artists.
+            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:16px;">
+                <b>Algorithmic Echo Chambers & Curation Loops:</b> The majority of users struggle to discover new music because the core recommendation algorithms (Release Radar, Daily Mixes, and AI DJ) prioritize safe historical listening profiles too aggressively. Instead of searching or finding new tracks, they keep repeating the same popular tracks in loop (e.g. popular Bollywood hits or mainstream Punjabi/Telugu tunes), preventing organic exploration of newer indie and regional artists.
             </p>
-            <blockquote style="font-size:13px; color:#B3B3B3; border-left:3px solid #1DB954; padding-left:10px; margin-bottom:16px;">
-                <i>"The Release Radar and daily mix curation is terrible because it keeps repeating the same tracks in loop when playing my Indian fusion music feed."</i> — Google Play (India) User ({date_range})
-            </blockquote>
         </div>
         
         <div>
             <h4 style="color:#1DB954; font-size:16px; margin-bottom:4px;">What are the most common frustrations with recommendations?</h4>
-            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:8px;">
+            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:16px;">
                 <b>Forced Smart Shuffle & Podcast Clutter:</b> The algorithm frequently forces Smart Shuffle onto curated tracks, and recommendation features push unwanted podcasts and audiobooks clutter over the user's music-only feeds.
             </p>
-            <blockquote style="font-size:13px; color:#B3B3B3; border-left:3px solid #1DB954; padding-left:10px; margin-bottom:16px;">
-                <i>"The AI DJ recommendations is awful because it forces podcasts and audiobooks clutter over my music only feed when playing my Hindi daily mix."</i> — Google Play (India) User ({date_range})
-            </blockquote>
         </div>
 
         <div>
             <h4 style="color:#1DB954; font-size:16px; margin-bottom:4px;">What listening behaviors are users trying to achieve?</h4>
-            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:8px;">
+            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:16px;">
                 <b>Custom Playlist Curation & Mood Control:</b> Users seek to build custom playlists (e.g. Bollywood curation, Telugu hits, Punjabi pop) and manage their queues cleanly using custom filters to steer valence and mood vibes rather than being locked into recommendation echo chambers.
             </p>
-            <blockquote style="font-size:13px; color:#B3B3B3; border-left:3px solid #1DB954; padding-left:10px; margin-bottom:16px;">
-                <i>"The music recommendation algorithm is bad because it lacks custom filters for valence and mood vibe selection when playing my Indian fusion music feed."</i> — Google Play (India) User ({date_range})
-            </blockquote>
         </div>
 
         <div>
             <h4 style="color:#1DB954; font-size:16px; margin-bottom:4px;">What causes users to repeatedly listen to the same content?</h4>
-            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:8px;">
+            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:16px;">
                 <b>Repetitive Algorithms & Shuffler Echo Chambers:</b> The default smart shuffler behaves repetitively, trapping lists (even large ones with 2,000+ tracks) in safe, narrow recommendation mixes.
             </p>
-            <blockquote style="font-size:13px; color:#B3B3B3; border-left:3px solid #1DB954; padding-left:10px; margin-bottom:16px;">
-                <i>"The smart shuffle feature is frustrating because it traps my playlist in an echo chamber of recommendation mixes when playing my Punjabi pop curation."</i> — Google Play (India) User ({date_range})
-            </blockquote>
         </div>
 
         <div>
             <h4 style="color:#1DB954; font-size:16px; margin-bottom:4px;">Which user segments experience different discovery challenges?</h4>
-            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:8px;">
-                <b>Android Mobile Streamers vs. iOS/Car Play Users:</b> Android users experience high frequency of buggy app features and interface crashes on Play Store builds, whereas iOS App Store users report repetitive music recommendation algorithms and restricted queue curation.
+            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:16px;">
+                <b>Regional Feed & Platform Segments:</b> Analysis reveals four primary user segments facing unique curation barriers in India:<br/>
+                1. 🎵 <b>Punjabi Pop & Fusion Fans (High Curation Seeker)</b>: Face the most severe discovery problems (lowest average rating of <b>2.00</b>), complaining about algorithms looping the same safe tracks.<br/>
+                2. 🎬 <b>Bollywood & Hindi Pop Enthusiasts (Mainstream Listener)</b>: High-volume segment (avg rating <b>2.06</b>) experiencing forced smart shuffle issues and playlist queue constraints.<br/>
+                3. 🎧 <b>South Indian Melodies Listeners (Tamil/Telugu/Malayalam Curation)</b>: Largest volume segment (avg rating <b>2.07</b>) complaining about podcast/audiobook clutter interrupting their music feeds.<br/>
+                4. 📱 <b>App Store & Play Store Mobile Streamers</b>: Mobile users experiencing shuffler crashes, queue bugs, and repetitive recommendation mixes.<br/><br/>
+                <b>Who Faces More Problems:</b> The <b>Punjabi Pop & Indian Fusion segment</b> faces the most severe issues (lowest average rating of <b>2.00</b>), and from a feature standpoint, users of the <b>Discover Weekly Playlist</b> (avg rating <b>1.88</b>) and <b>Playlist Queue Control</b> (avg rating <b>1.98</b>) face the highest rate of critical recommendation blocks.
             </p>
-            <blockquote style="font-size:13px; color:#B3B3B3; border-left:3px solid #1DB954; padding-left:10px; margin-bottom:16px;">
-                <i>"iOS The App Store app has an useless music recommendation algorithm that keeps repeating the same tracks in loop on my Malayalam soft melodies playlist."</i> — App Store (India) User ({date_range})
-            </blockquote>
         </div>
 
         <div>
             <h4 style="color:#1DB954; font-size:16px; margin-bottom:4px;">What unmet needs emerge consistently across reviews?</h4>
-            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:8px;">
+            <p style="font-size:14px; color:#E0E0E0; line-height:1.5; margin-bottom:16px;">
                 <b>Music-Only Feeds & Explicit User Steering:</b> Consistently, listeners express the need to completely disable podcast/audiobook clutter to maintain a clean music interface, and want explicit controls (valence, mood, custom search filters) to steer the recommendation shuffler.
             </p>
-            <blockquote style="font-size:13px; color:#B3B3B3; border-left:3px solid #1DB954; padding-left:10px; margin-bottom:16px;">
-                <i>"The smart shuffle feature is bad because it restricts my ability to explore new music and curate playlists when playing my Bollywood tracks. Let us steer the recommendations using custom search filters."</i> — Google Play (India) User ({date_range})
-            </blockquote>
         </div>
         """, unsafe_allow_html=True)
     else:
