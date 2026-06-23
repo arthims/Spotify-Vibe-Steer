@@ -3,13 +3,13 @@ import re
 import pandas as pd
 
 # Define paths
-csv_path = r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify Grad\spotify_google_play_reviews.csv"
+csv_path = r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify_Grad\spotify_google_play_reviews.csv"
 md_path = r"C:\Users\SDS01493\.gemini\antigravity\brain\32ac3bfd-2c41-4a3e-893c-9749c777098b\250_spotify_reviews.md"
 
 # Output paths
 outputs = [
-    r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify Grad\Reviews_Spotify.csv",
-    r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify Grad\Reviews_Spotify.xlsx",
+    r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify_Grad\Reviews_Spotify.csv",
+    r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify_Grad\Reviews_Spotify.xlsx",
     r"C:\Users\SDS01493\.gemini\antigravity\scratch\Reviews_Spotify.csv",
     r"C:\Users\SDS01493\.gemini\antigravity\scratch\Reviews_Spotify.xlsx"
 ]

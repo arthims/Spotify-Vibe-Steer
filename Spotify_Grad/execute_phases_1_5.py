@@ -10,15 +10,15 @@ load_dotenv()
 # File paths
 csv_path = r"C:\Users\SDS01493\.gemini\antigravity\scratch\Reviews_Spotify.csv"
 filtered_csv_paths = [
-    r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify Grad\Reviews_Spotify_Discovery_Filtered.csv",
-    r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify Grad\Reviews_Spotify_Discovery_Filtered.xlsx",
+    r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify_Grad\Reviews_Spotify_Discovery_Filtered.csv",
+    r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify_Grad\Reviews_Spotify_Discovery_Filtered.xlsx",
     r"C:\Users\SDS01493\.gemini\antigravity\scratch\Reviews_Spotify_Discovery_Filtered.csv",
     r"C:\Users\SDS01493\.gemini\antigravity\scratch\Reviews_Spotify_Discovery_Filtered.xlsx"
 ]
 
 report_paths = [
     r"C:\Users\SDS01493\.gemini\antigravity\brain\32ac3bfd-2c41-4a3e-893c-9749c777098b\thematic_research_report.md",
-    r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify Grad\thematic_research_report.md"
+    r"C:\Users\SDS01493\.gemini\antigravity\scratch\Spotify_Grad\thematic_research_report.md"
 ]
 
 # Relevance keywords
