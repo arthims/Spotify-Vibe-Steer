@@ -298,31 +298,20 @@ def render_dashboard(date_range):
         except ValueError:
             topic_index = 0
             
-        default_kw = st.session_state.get("search_kw", "")
-        
         sel_topic = st.selectbox(
             "🎯 Filter by Problem Topic", 
             list(topic_options.keys()), 
             index=topic_index,
             key=f"topic_sel_{safe_key}"
         )
-        search_kw = st.text_input(
-            "🔍 Or search custom keywords (e.g. 'carplay', 'lyrics', 'slow'):", 
-            value=default_kw,
-            key=f"search_kw_{safe_key}"
-        ).strip().lower()
         
         # Sync back to session state so changing them interactively persists
         st.session_state.selected_topic = sel_topic
-        st.session_state.search_kw = search_kw
         
         df_display = df_filtered.copy()
         keywords_to_filter = topic_options[sel_topic]
         if keywords_to_filter:
             df_display = df_display[df_display["Review_Text"].str.lower().str.contains('|'.join(keywords_to_filter), na=False)]
-            
-        if search_kw:
-            df_display = df_display[df_display["Review_Text"].str.lower().str.contains(search_kw, na=False)]
             
         st.caption("listing top 20 reviews from various platform.")
         
@@ -475,20 +464,12 @@ if not st.session_state.get("analyzed", False):
     except ValueError:
         topic_index = 0
         
-    default_kw = st.session_state.get("search_kw", "")
-    
     sel_topic = st.selectbox(
         "🎯 Filter by Problem Topic", 
         list(topic_options.keys()), 
         index=topic_index,
         key="initial_topic_sel"
     )
-    
-    search_kw = st.text_input(
-        "🔍 Or search custom keywords (e.g. 'carplay', 'lyrics', 'slow'):", 
-        value=default_kw,
-        key="initial_search_kw"
-    ).strip().lower()
     
     if st.button("Analyse", key="analyse_button", use_container_width=True, disabled=date_error):
         progress_bar = st.progress(0.0)
@@ -518,7 +499,6 @@ if not st.session_state.get("analyzed", False):
         time.sleep(0.6)
         
         st.session_state.selected_topic = sel_topic
-        st.session_state.search_kw = search_kw
         st.session_state.analyzed = True
         st.session_state.last_analyzed_period = range_str
         
