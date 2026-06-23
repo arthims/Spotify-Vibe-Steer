@@ -37,8 +37,10 @@ Analysis of qualitative feedback reveals that Spotify's core value proposition�
 
 ## 5. Which user segments experience different discovery challenges?
 *   **Premium vs. Free Tier Segments:** Analysis reveals two main user segments experiencing different curation and discovery barriers in India:
-    1. 💎 **Premium Tier Users (n=1,118)**: Complain about advanced curation failures (avg rating **2.05**). They pay for customized, clean music streaming but face repetitive Discover Weekly shuffles, failed AI DJ intent mapping, and unwanted podcast/audiobook clutter over their music-only feeds.
-    2. 🆓 **Free Tier Users (n=951)**: Complain about restricted discovery controls (avg rating **2.05**). They are forced into smart shuffle loops, face ad density that disrupts music discovery, and lack basic queue organization controls.
+    1. 💎 **Premium Tier Users**: Complain about advanced curation failures (avg rating **2.05**). They pay for customized, clean music streaming but face repetitive Discover Weekly shuffles, failed AI DJ intent mapping, and unwanted podcast/audiobooks cluttering their feed.
+    2. 🆓 **Free Tier Users**: Complain about restricted discovery controls (avg rating **2.05**). Specifically, they face:
+        * **Forced Playback Restrictions:** Unable to turn off smart shuffle or play tracks on-demand, trapping them in recommendation loops.
+        * **Paywalled Curation Controls:** Basic functions like rewinding, skipping, or organizing playlist queues are locked behind paywalls, forcing them to repeat content.
 *   **Who Faces More Problems:** Both segments experience high levels of dissatisfaction (avg rating **2.05** for both), but they face different challenges: Premium users suffer from **algorithmic stagnation and content clutter** in their curation, while Free users face **forced shuffler restrictions and playback limitations** that block organic discovery.
 
 ---
