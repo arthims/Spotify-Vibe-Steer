@@ -1,200 +1,2516 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Restaurant Recommender</title>
-    <!-- Tailwind CSS via CDN for rapid styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        zomato: '#ff4b4b',
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Spotify Vibe Steer - AI-Native Music Discovery</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        .glass {
-            background: rgba(30, 30, 46, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        /* --- Vanilla CSS Reset & Typography --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- Main Layout --- */
+        .app-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 90px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 260px;
+            background-color: #000000;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 12px 12px 12px;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+
+        .spotify-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-left: 12px;
+            margin-bottom: 8px;
+        }
+
+        .spotify-logo svg {
+            fill: #ffffff;
+            width: 130px;
+            height: 40px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            color: #b3b3b3;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.2s, background-color 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .library-section {
+            flex: 1;
+            background-color: #121212;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+        }
+
+        .library-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #b3b3b3;
+        }
+
+        .library-header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .library-header-title svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .playlist-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .playlist-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .playlist-art {
+            width: 48px;
+            height: 48px;
+            border-radius: 4px;
+            background-color: #282828;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b3b3b3;
+            font-size: 20px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .playlist-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .playlist-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .playlist-type {
+            font-size: 12px;
+            color: #b3b3b3;
+        }
+
+        /* --- Main Content Area --- */
+        .main-content {
+            flex: 1;
+            background: linear-gradient(to bottom, #1e1e1e 0%, #121212 300px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* --- Top Bar --- */
+        .top-bar {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            background-color: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 10;
+        }
+
+        .bar-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            cursor: not-allowed;
+        }
+
+        .profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 2px 8px 2px 2px;
+            border-radius: 23px;
+            cursor: pointer;
+        }
+
+        .profile-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #535353;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            color: #ffffff;
+        }
+
+        .profile-name {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* --- Dashboard Content Layout --- */
+        .content-body {
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        /* --- Grid & Card Aesthetics --- */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .section-desc {
+            font-size: 14px;
+            color: #b3b3b3;
+            margin-top: 4px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 24px;
+        }
+
+        .music-card {
+            background-color: #181818;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        .music-card:hover {
+            background-color: #282828;
+        }
+
+        .card-art-container {
+            width: 100%;
+            padding-bottom: 100%; /* Square ratio */
+            position: relative;
+            border-radius: 6px;
+            background-color: #282828;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        .card-art {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.3s;
+        }
+
+        .music-card:hover .card-art {
+            transform: scale(1.05);
+        }
+
+        .card-play-btn {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #1db954;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.3s, transform 0.3s, background-color 0.2s;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+
+        .card-play-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #000000;
+        }
+
+        .card-play-btn:hover {
+            background-color: #1ed760;
+            transform: translateY(8px) scale(1.06);
+        }
+
+        .music-card:hover .card-play-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #b3b3b3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+
+        /* --- Recents Quick Grid --- */
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .quick-card {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            padding-right: 64px;
+        }
+
+        .quick-card:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .quick-art {
+            width: 80px;
+            height: 80px;
+            background-size: cover;
+            background-position: center;
+            background-color: #282828;
+            flex-shrink: 0;
+        }
+
+        .quick-title {
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .quick-play-btn {
+            position: absolute;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1db954;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+
+        .quick-play-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #000000;
+        }
+
+        .quick-card:hover .quick-play-btn {
+            opacity: 1;
+        }
+
+        .quick-play-btn:hover {
+            transform: scale(1.05);
+            background-color: #1ed760;
+        }
+
+        /* --- PM Documentation Panels --- */
+        .pm-panel {
+            background-color: #181818;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pm-h1 {
+            font-size: 32px;
+            font-weight: 800;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 16px;
+            color: #1db954;
+        }
+
+        .pm-h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 12px;
+            color: #ffffff;
+        }
+
+        .pm-p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #b3b3b3;
+        }
+
+        .pm-quote {
+            border-left: 4px solid #1db954;
+            padding-left: 16px;
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.02);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            color: #ffffff;
+        }
+
+        .pm-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 8px;
+        }
+
+        .pm-card-title {
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .pm-list {
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            color: #b3b3b3;
+            font-size: 15px;
+        }
+
+        /* --- Floating Widget Trigger --- */
+        .loop-breaker-trigger {
+            position: fixed;
+            bottom: 110px; /* High enough to float above bottom player */
+            right: 32px;
+            background-color: #1db954;
+            color: #000000;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 12px 36px rgba(29, 185, 84, 0.4);
+            z-index: 99;
+            transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+            animation: pulseTrigger 2s infinite;
+        }
+
+        .loop-breaker-trigger:hover {
+            transform: scale(1.05);
+            background-color: #1ed760;
+            box-shadow: 0 12px 36px rgba(29, 185, 84, 0.6);
+        }
+
+        .loop-breaker-trigger svg {
+            width: 20px;
+            height: 20px;
+            fill: #000000;
+        }
+
+        @keyframes pulseTrigger {
+            0% { box-shadow: 0 0 0 0 rgba(29, 185, 84, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(29, 185, 84, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(29, 185, 84, 0); }
+        }
+
+        /* --- Chatbot Panel Drawer --- */
+        .chatbot-drawer {
+            position: fixed;
+            top: 0;
+            right: -420px; /* Hidden by default */
+            width: 400px;
+            height: 100vh;
+            background-color: #181818;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .chatbot-drawer.open {
+            right: 0;
+        }
+
+        .chat-header {
+            padding: 24px;
+            background-color: #000000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #1db954;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-logo-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #000000;
+        }
+
+        .chat-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .chat-subtitle {
+            font-size: 11px;
+            color: #1db954;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .close-chat-btn {
+            background: none;
+            border: none;
+            color: #b3b3b3;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            border-radius: 50%;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .close-chat-btn:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .close-chat-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* --- Dev Console (Toggles) --- */
+        .dev-console {
+            background-color: #0d0d0d;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .dev-console-title {
+            font-size: 11px;
+            color: #535353;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dev-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .dev-select-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dev-select-group label {
+            font-size: 10px;
+            color: #b3b3b3;
+        }
+
+        .dev-select {
+            background-color: #222222;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 11px;
+            padding: 6px;
+            border-radius: 4px;
+            outline: none;
         }
-        .loader {
-            border-top-color: #ff4b4b;
-            -webkit-animation: spinner 1.5s linear infinite;
-            animation: spinner 1.5s linear infinite;
+
+        .dev-checkbox-group {
+            grid-column: span 2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
         }
-        @keyframes spinner {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        .dev-checkbox-group label {
+            font-size: 11px;
+            color: #b3b3b3;
+            cursor: pointer;
+        }
+
+        /* --- Chat Messages --- */
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: linear-gradient(to bottom, #181818, #0f0f0f);
+        }
+
+        .chat-msg {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 85%;
+            animation: msgFadeIn 0.3s ease-out;
+        }
+
+        @keyframes msgFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-msg.bot {
+            align-self: flex-start;
+        }
+
+        .chat-msg.user {
+            align-self: flex-end;
+        }
+
+        .msg-bubble {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chat-msg.bot .msg-bubble {
+            background-color: #282828;
+            color: #ffffff;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-msg.user .msg-bubble {
+            background-color: #1db954;
+            color: #000000;
+            font-weight: 600;
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg-time {
+            font-size: 10px;
+            color: #535353;
+            align-self: flex-end;
+        }
+
+        .chat-msg.user .msg-time {
+            align-self: flex-start;
+        }
+
+        /* --- Context Detection Card --- */
+        .context-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .context-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .context-badge {
+            background-color: rgba(29, 185, 84, 0.1);
+            color: #1db954;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* --- Loader / Typing --- */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 8px 12px;
+            background-color: #282828;
+            border-radius: 12px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #b3b3b3;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        /* --- Action Choices --- */
+        .chat-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .chat-action-btn {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .chat-action-btn:hover {
+            border-color: #1db954;
+            background-color: rgba(29, 185, 84, 0.05);
+        }
+
+        /* --- Song Result Item --- */
+        .rec-song-item {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .rec-song-item:hover {
+            border-color: rgba(29, 185, 84, 0.3);
+        }
+
+        .song-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .song-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .song-art-mini {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            background-color: #282828;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .song-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .song-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .song-artist {
+            font-size: 12px;
+            color: #b3b3b3;
+        }
+
+        .song-play-mini {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .song-play-mini:hover {
+            transform: scale(1.08);
+            background-color: #1db954;
+        }
+
+        .song-play-mini svg {
+            width: 16px;
+            height: 16px;
+            fill: #000000;
+        }
+
+        .song-explanation {
+            font-size: 11px;
+            color: #b3b3b3;
+            line-height: 1.4;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 8px;
+        }
+
+        .song-explanation strong {
+            color: #1db954;
+        }
+
+        /* --- Mood Pop-up Overlay --- */
+        .mood-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 101;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .mood-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mood-modal {
+            background-color: #181818;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .mood-overlay.open .mood-modal {
+            transform: translateY(0);
+        }
+
+        .mood-modal-title {
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .mood-modal-desc {
+            font-size: 14px;
+            color: #b3b3b3;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .mood-btn {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 12px;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+        }
+
+        .mood-btn:hover {
+            transform: scale(1.03);
+            background-color: rgba(29, 185, 84, 0.08);
+            border-color: #1db954;
+        }
+
+        .mood-emoji {
+            font-size: 32px;
+        }
+
+        /* --- Footer Playback Bar --- */
+        .player-bar {
+            height: 90px;
+            background-color: #181818;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 10;
+        }
+
+        /* Player Left: Song Details */
+        .player-left {
+            width: 30%;
+            min-width: 180px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .player-art {
+            width: 56px;
+            height: 56px;
+            border-radius: 4px;
+            background-color: #282828;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .player-song-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .player-song-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .player-song-artist {
+            font-size: 12px;
+            color: #b3b3b3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Player Center: Controls & Bar */
+        .player-center {
+            width: 40%;
+            max-width: 722px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: #b3b3b3;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.1s;
+        }
+
+        .control-btn:hover {
+            color: #ffffff;
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .control-btn.play-pause {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            color: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn.play-pause:hover {
+            transform: scale(1.06);
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .control-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .control-btn.play-pause svg {
+            fill: #000000;
+        }
+
+        .playback-progress {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-time {
+            font-size: 11px;
+            color: #b3b3b3;
+            min-width: 30px;
+        }
+
+        .progress-bar-bg {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background-color: #535353;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%; /* Dynamic play progress */
+            background-color: #ffffff;
+            transition: width 0.1s linear;
+        }
+
+        .progress-bar-bg:hover .progress-bar-fill {
+            background-color: #1db954;
+        }
+
+        /* Equalizer Animation */
+        .eq-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 20px;
+            width: 25px;
+            margin-left: 8px;
+        }
+
+        .eq-bar {
+            width: 3px;
+            height: 2px;
+            background-color: #1db954;
+            border-radius: 1px;
+            transition: height 0.1s ease;
+        }
+
+        .eq-bar.active {
+            animation: bounceBar 1.2s ease-in-out infinite alternate;
+        }
+
+        .eq-bar:nth-child(1) { animation-delay: 0.1s; }
+        .eq-bar:nth-child(2) { animation-delay: 0.4s; }
+        .eq-bar:nth-child(3) { animation-delay: 0.2s; }
+        .eq-bar:nth-child(4) { animation-delay: 0.5s; }
+
+        @keyframes bounceBar {
+            0% { height: 2px; }
+            100% { height: 18px; }
+        }
+
+        /* Player Right: Extras */
+        .player-right {
+            width: 30%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 16px;
+        }
+
+        .volume-bar {
+            width: 100px;
+            height: 4px;
+            background-color: #535353;
+            border-radius: 2px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .volume-fill {
+            width: 70%;
+            height: 100%;
+            background-color: #b3b3b3;
+        }
+
+        .volume-bar:hover .volume-fill {
+            background-color: #1db954;
+        }
+
+        /* --- Onboarding Modal --- */
+        .onboarding-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .onboarding-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .onboarding-modal {
+            background-color: #181818;
+            border: 1px solid rgba(29, 185, 84, 0.3);
+            border-radius: 16px;
+            width: 95%;
+            max-width: 500px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 20px 50px rgba(29, 185, 84, 0.15);
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .onboarding-overlay.open .onboarding-modal {
+            transform: scale(1);
+        }
+
+        .onboarding-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: #1db954;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(29, 185, 84, 0.4);
+            margin-bottom: 8px;
+        }
+
+        .onboarding-icon svg {
+            width: 36px;
+            height: 36px;
+            fill: #000000;
+        }
+
+        .onboarding-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .onboarding-desc {
+            font-size: 14px;
+            color: #b3b3b3;
+            line-height: 1.6;
+        }
+
+        .onboarding-badge {
+            background-color: rgba(29, 185, 84, 0.1);
+            color: #1db954;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .onboarding-btn {
+            background-color: #1db954;
+            color: #000000;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        .onboarding-btn:hover {
+            transform: scale(1.03);
+            background-color: #1ed760;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen font-sans">
+<body>
 
-    <!-- Header -->
-    <header class="bg-gray-800 border-b border-gray-700 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <span class="text-3xl">🍽️</span>
-                <h1 class="text-2xl font-bold text-white tracking-tight">AI Recommender <span class="text-zomato">Groq</span></h1>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="app-container">
         
-        <!-- Sidebar / Form -->
-        <div class="lg:col-span-1">
-            <div class="glass p-6 rounded-2xl shadow-xl sticky top-8">
-                <h2 class="text-xl font-semibold mb-6 flex items-center"><span class="mr-2">🎯</span> Your Preferences</h2>
-                
-                <form id="prefForm" class="space-y-5">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">📍 Location/City</label>
-                        <input type="text" id="location" placeholder="e.g. Bellandur" required
-                            class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-zomato transition-colors">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">🍕 Cuisines (comma separated)</label>
-                        <input type="text" id="cuisines" placeholder="e.g. North Indian, Chinese" 
-                            class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-zomato transition-colors">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-400 mb-1">Min Budget (₹)</label>
-                            <input type="number" id="minBudget" value="0"
-                                class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-zomato transition-colors">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-400 mb-1">Max Budget (₹)</label>
-                            <input type="number" id="maxBudget" value="2000"
-                                class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-zomato transition-colors">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">⭐ Minimum Rating</label>
-                        <input type="number" step="0.1" id="minRating" value="4.0"
-                            class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-zomato transition-colors">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">✍️ Additional Preferences</label>
-                        <textarea id="additionalPrefs" rows="3" placeholder="e.g. Romantic vibe, outdoor seating..."
-                            class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-zomato transition-colors resize-none"></textarea>
-                    </div>
-
-                    <button type="submit" 
-                        class="w-full bg-zomato hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg shadow-red-500/30 flex justify-center items-center">
-                        <span id="btnText">🔍 Find Restaurants</span>
-                        <div id="btnSpinner" class="hidden w-5 h-5 border-2 border-white border-solid rounded-full loader ml-2"></div>
-                    </button>
-                </form>
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="spotify-logo" style="display: flex; align-items: center; gap: 10px; padding-left: 12px; margin-bottom: 8px;">
+                <svg viewBox="0 0 24 24" style="fill: #1db954; width: 40px; height: 40px;">
+                    <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.565.387-.86.207-2.377-1.454-5.37-1.783-8.894-.978-.336.077-.67-.133-.747-.47-.077-.337.133-.67.47-.747 3.856-.88 7.15-.51 9.824 1.13.295.18.387.563.207.858zm1.224-2.72c-.227.367-.707.487-1.074.26-2.72-1.672-6.87-2.157-10.082-1.182-.413.125-.85-.107-.975-.52-.125-.413.107-.85.52-.975 3.668-1.112 8.243-.573 11.35 1.34.367.226.487.707.26 1.074zm.107-2.834C14.39 8.66 8.448 8.463 5.007 9.508c-.53.16-1.09-.14-1.25-.67-.16-.53.14-1.09.67-1.25 3.953-1.2 10.514-.976 14.59 1.443.48.285.64.9.356 1.38-.285.48-.9.64-1.38.356z"/>
+                </svg>
+                <span style="font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">Spotify</span>
+                <span style="font-size: 10px; font-weight: 700; color: #1db954; background: rgba(29, 185, 84, 0.1); padding: 2px 6px; border-radius: 10px; margin-left: 4px;">AI</span>
             </div>
-        </div>
-
-        <!-- Results Area -->
-        <div class="lg:col-span-2">
-            <div id="initialState" class="h-full flex flex-col items-center justify-center text-center p-12 text-gray-500 border-2 border-dashed border-gray-700 rounded-2xl">
-                <span class="text-6xl mb-4">✨</span>
-                <h3 class="text-2xl font-medium text-gray-300">Awaiting Your Preferences</h3>
-                <p class="mt-2">Enter your criteria in the sidebar and let the AI find your perfect meal.</p>
-            </div>
-
-            <div id="resultsContainer" class="hidden space-y-6">
-                <!-- Summary -->
-                <div class="glass p-6 rounded-2xl">
-                    <h3 id="resultSummary" class="text-xl font-semibold text-zomato leading-relaxed"></h3>
+            
+            <nav class="nav-menu">
+                <div class="nav-item active" id="menu-home" onclick="showView('home')">
+                    <svg viewBox="0 0 24 24"><path d="M12.5 3.247a1 1 0 0 0-1 0L4 7.577V20h4.5v-6a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v6H20V7.577l-7.5-4.33zm-2-1.732a3 3 0 0 1 3 0l7.5 4.33a3 3 0 0 1 1.5 2.598V21a1 1 0 0 1-1 1h-6.5a1 1 0 0 1-1-1v-6h-3v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8.443a3 3 0 0 1 1.5-2.598l7.5-4.33z"/></svg>
+                    Home Player
                 </div>
+            </nav>
+
+            <div class="library-section">
+                <div class="library-header">
+                    <div class="library-header-title">
+                        <svg viewBox="0 0 24 24"><path d="M3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zM20.5 22h-11a2.5 2.5 0 0 1-2.5-2.5V4.5A2.5 2.5 0 0 1 9.5 2h11A2.5 2.5 0 0 1 23 4.5v15a2.5 2.5 0 0 1-2.5 2.5zM9.5 4a.5.5 0 0 0-.5.5v15a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-15a.5.5 0 0 0-.5-.5h-11z"/></svg>
+                        Your Library
+                    </div>
+                </div>
+
+                <div class="playlist-list">
+                    <div class="playlist-item" onclick="loadSimulatedPlaylist('daily1')">
+                        <div class="playlist-art" style="background-color: #27856a; background-image: linear-gradient(135deg, #1db954, #191414);">DM</div>
+                        <div class="playlist-details">
+                            <span class="playlist-name">Daily Mix 1</span>
+                            <span class="playlist-type">Playlist • Spotify</span>
+                        </div>
+                    </div>
+                    <div class="playlist-item" onclick="loadSimulatedPlaylist('daily2')">
+                        <div class="playlist-art" style="background-color: #3d3d3d; background-image: linear-gradient(135deg, #121212, #535353);">DM</div>
+                        <div class="playlist-details">
+                            <span class="playlist-name">Daily Mix 2</span>
+                            <span class="playlist-type">Playlist • Spotify</span>
+                        </div>
+                    </div>
+                    <div class="playlist-item" onclick="loadSimulatedPlaylist('favorites')">
+                        <div class="playlist-art" style="background-color: #4b2bb9; background-image: linear-gradient(135deg, #4b2bb9, #8c72ec);">♥</div>
+                        <div class="playlist-details">
+                            <span class="playlist-name">Liked Songs</span>
+                            <span class="playlist-type">Playlist • 48 songs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content" id="main-content-view">
+            
+            <!-- TOP BAR -->
+            <header class="top-bar">
+                <div class="bar-nav">
+                    <!-- Navigation arrows removed -->
+                </div>
+                <div class="profile-badge">
+                    <div class="profile-avatar">S</div>
+                    <span class="profile-name">Spotify User</span>
+                </div>
+            </header>
+
+            <!-- VIEW: HOME / PLAYER -->
+            <div class="content-body" id="view-home">
+                <h1 class="welcome-title">Welcome back</h1>
                 
-                <!-- Cards container -->
-                <div id="cardsArea" class="space-y-4"></div>
+                <!-- Quick Access / Repetitive Loops Section -->
+                <div>
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Jump Back In (Your Comfort Loop)</h2>
+                            <p class="section-desc">The algorithmic mixes you listen to on repeat every single day.</p>
+                        </div>
+                    </div>
+                    <div class="quick-grid">
+                        <div class="quick-card" onclick="playMockRepeatedTrack('Kesariya', 'Arijit Singh')">
+                            <div class="quick-art" style="background-image: linear-gradient(135deg, #27856a, #1db954);"></div>
+                            <span class="quick-title">Daily Mix 1 (Hindi Pop)</span>
+                            <button class="quick-play-btn">
+                                <svg viewBox="0 0 24 24"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+                            </button>
+                        </div>
+                        <div class="quick-card" onclick="playMockRepeatedTrack('Shape of You', 'Ed Sheeran')">
+                            <div class="quick-art" style="background-image: linear-gradient(135deg, #4b2bb9, #8c72ec);"></div>
+                            <span class="quick-title">Liked Songs (English Hits)</span>
+                            <button class="quick-play-btn">
+                                <svg viewBox="0 0 24 24"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+                            </button>
+                        </div>
+                        <div class="quick-card" onclick="playMockRepeatedTrack('Samajavaragamana', 'Sid Sriram')">
+                            <div class="quick-art" style="background-image: linear-gradient(135deg, #f35b20, #f98424);"></div>
+                            <span class="quick-title">Daily Mix 2 (Telugu Melodic)</span>
+                            <button class="quick-play-btn">
+                                <svg viewBox="0 0 24 24"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation Banner -->
+                <div style="background-color: #181818; padding: 24px; border-radius: 12px; border-left: 6px solid #1db954;">
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Stuck in a Repetitive Loop? 🔄</h3>
+                    <p style="font-size: 14px; color: #b3b3b3; line-height: 1.5; margin-bottom: 12px;">
+                        Standard recommendation engines keep repeating songs they know you click on. They lack immediate contextual intent.
+                        To break your loop, launch the <strong>Loop Breaker</strong> chatbot in the bottom right corner of this player. It will read your immediate location, local weather, and mood, and introduce you to brand new songs you haven't heard before.
+                    </p>
+                </div>
+
+                <!-- Popular Hits Grid -->
+                <div>
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Popular Today</h2>
+                            <p class="section-desc">Globally trending songs currently dominating the charts.</p>
+                        </div>
+                    </div>
+                    <div class="card-grid">
+                        <div class="music-card" onclick="playMockRepeatedTrack('Kesariya', 'Arijit Singh')">
+                            <div class="card-art-container">
+                                <div class="card-art" style="background-color:#ff4b4b; background-image: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);"></div>
+                            </div>
+                            <span class="card-title">Kesariya</span>
+                            <span class="card-subtitle">Arijit Singh • Hindi Pop</span>
+                            <button class="card-play-btn">
+                                <svg viewBox="0 0 24 24"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+                            </button>
+                        </div>
+                        <div class="music-card" onclick="playMockRepeatedTrack('Blinding Lights', 'The Weeknd')">
+                            <div class="card-art-container">
+                                <div class="card-art" style="background-color:#1e3c72; background-image: linear-gradient(to right, #243b55, #141e30);"></div>
+                            </div>
+                            <span class="card-title">Blinding Lights</span>
+                            <span class="card-subtitle">The Weeknd • Synth Pop</span>
+                            <button class="card-play-btn">
+                                <svg viewBox="0 0 24 24"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+                            </button>
+                        </div>
+                        <div class="music-card" onclick="playMockRepeatedTrack('Enjoy Enjaami', 'Dhee, Arivu')">
+                            <div class="card-art-container">
+                                <div class="card-art" style="background-color:#0ba360; background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);"></div>
+                            </div>
+                            <span class="card-title">Enjoy Enjaami</span>
+                            <span class="card-subtitle">Dhee, Arivu • Tamil Folk-Pop</span>
+                            <button class="card-play-btn">
+                                <svg viewBox="0 0 24 24"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+                            </button>
+                        </div>
+                        <div class="music-card" onclick="playMockRepeatedTrack('Buttabomma', 'Armaan Malik')">
+                            <div class="card-art-container">
+                                <div class="card-art" style="background-color:#f1c40f; background-image: linear-gradient(135deg, #f5d142, #b8860b);"></div>
+                            </div>
+                            <span class="card-title">Buttabomma</span>
+                            <span class="card-subtitle">Armaan Malik • Telugu Melody</span>
+                            <button class="card-play-btn">
+                                <svg viewBox="0 0 24 24"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </main>
+    </div>
+
+    <!-- CHATBOT DRAWER PANEL -->
+    <div class="chatbot-drawer" id="chat-drawer">
+        
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="chat-title-group">
+                <div class="chat-logo-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 1 9 9v1.5a2.5 2.5 0 0 1-5 0V12a4 4 0 1 0-4 4h3a1 1 0 0 1 0 2h-3a6 6 0 1 1 6-6v1.5a.5.5 0 0 0 1 0V12A9 9 0 0 1 12 3z"/></svg>
+                </div>
+                <div>
+                    <span class="chat-title">AI Loop Breaker</span>
+                    <div class="chat-subtitle">Contextual Discovery</div>
+                </div>
+            </div>
+            <button class="close-chat-btn" onclick="toggleChat(false)">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+
+        <!-- Dev Sandbox Controller -->
+        <div class="dev-console">
+            <div class="dev-controls">
+                <div class="dev-checkbox-group" style="grid-column: span 2; margin-bottom: 4px;">
+                    <input type="checkbox" id="sandbox-realtime" onchange="onRealtimeCheckboxChange()" checked>
+                    <label for="sandbox-realtime" style="color: #1db954; font-weight: 700; cursor: pointer;">🟢 Live Location & Weather (Auto-detect)</label>
+                </div>
+                <div class="dev-select-group">
+                    <label for="sandbox-location">GPS Location (State)</label>
+                    <select id="sandbox-location" class="dev-select" onchange="onDevSandboxChange()" disabled style="opacity: 0.5;">
+                        <option value="Andhra Pradesh">Andhra Pradesh (Telugu)</option>
+                        <option value="Arunachal Pradesh">Arunachal Pradesh (Hindi)</option>
+                        <option value="Assam">Assam (Hindi)</option>
+                        <option value="Bihar">Bihar (Hindi)</option>
+                        <option value="Chhattisgarh">Chhattisgarh (Hindi)</option>
+                        <option value="Goa">Goa (Hindi)</option>
+                        <option value="Gujarat">Gujarat (Hindi)</option>
+                        <option value="Haryana">Haryana (Hindi)</option>
+                        <option value="Himachal Pradesh">Himachal Pradesh (Hindi)</option>
+                        <option value="Jharkhand">Jharkhand (Hindi)</option>
+                        <option value="Karnataka">Karnataka (Kannada)</option>
+                        <option value="Kerala">Kerala (Malayalam)</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh (Hindi)</option>
+                        <option value="Maharashtra" selected>Maharashtra (Hindi)</option>
+                        <option value="Manipur">Manipur (Hindi)</option>
+                        <option value="Meghalaya">Meghalaya (Hindi)</option>
+                        <option value="Mizoram">Mizoram (Hindi)</option>
+                        <option value="Nagaland">Nagaland (Hindi)</option>
+                        <option value="Odisha">Odisha (Hindi)</option>
+                        <option value="Punjab">Punjab (Hindi)</option>
+                        <option value="Rajasthan">Rajasthan (Hindi)</option>
+                        <option value="Sikkim">Sikkim (Hindi)</option>
+                        <option value="Tamil Nadu">Tamil Nadu (Tamil)</option>
+                        <option value="Telangana">Telangana (Telugu)</option>
+                        <option value="Tripura">Tripura (Hindi)</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh (Hindi)</option>
+                        <option value="Uttarakhand">Uttarakhand (Hindi)</option>
+                        <option value="West Bengal">West Bengal (Hindi)</option>
+                        <option value="Delhi">Delhi (Hindi)</option>
+                        <option value="Jammu & Kashmir">Jammu & Kashmir (Hindi)</option>
+                        <option value="Ladakh">Ladakh (Hindi)</option>
+                        <option value="Puducherry">Puducherry (Tamil)</option>
+                    </select>
+                </div>
+                <div class="dev-select-group">
+                    <label for="sandbox-weather">Weather</label>
+                    <select id="sandbox-weather" class="dev-select" onchange="onDevSandboxChange()" disabled style="opacity: 0.5;">
+                        <option value="Rainy">Rainy & Cozy</option>
+                        <option value="Sunny">Sunny & Bright</option>
+                        <option value="Cold">Cold & Moody</option>
+                        <option value="Overcast">Overcast & Melancholic</option>
+                    </select>
+                </div>
+                <div class="dev-checkbox-group" style="grid-column: span 2;">
+                    <input type="checkbox" id="sandbox-nonnative" onchange="onDevSandboxChange()">
+                    <label for="sandbox-nonnative">Simulate Non-Native Expat (Override local language)</label>
+                </div>
+                <div class="dev-select-group" id="history-lang-group" style="grid-column: span 2; margin-top: 4px; display: none;">
+                    <label for="sandbox-history-lang">Expat User's Playlist Majority Language</label>
+                    <select id="sandbox-history-lang" class="dev-select" onchange="onDevSandboxChange()">
+                        <option value="Hindi" selected>Hindi dominant</option>
+                        <option value="Tamil">Tamil dominant</option>
+                        <option value="Malayalam">Malayalam dominant</option>
+                        <option value="Telugu">Telugu dominant</option>
+                        <option value="Kannada">Kannada dominant</option>
+                        <option value="Bengali">Bengali dominant</option>
+                        <option value="Gujarati">Gujarati dominant</option>
+                        <option value="English">English dominant</option>
+                    </select>
+                </div>
             </div>
         </div>
-    </main>
 
+        <!-- Messages Area -->
+        <div class="chat-body" id="chat-messages">
+            <!-- Messages are rendered dynamically by JS -->
+        </div>
+
+    </div>
+
+    <!-- MOOD POP-UP OVERLAY -->
+    <div class="mood-overlay" id="mood-selector-overlay">
+        <div class="mood-modal">
+            <h3 class="mood-modal-title">What's your current mood vibe?</h3>
+            <p class="mood-modal-desc">In addition to the current weather context, choosing a mood allows the AI engine to map precise acoustic attributes (valence and energy) to recommend fresh songs.</p>
+            <div class="mood-grid">
+                <button class="mood-btn" onclick="selectMood('chill')">
+                    <span class="mood-emoji">😌</span>
+                    <span>Cozy / Chill</span>
+                </button>
+                <button class="mood-btn" onclick="selectMood('energetic')">
+                    <span class="mood-emoji">⚡</span>
+                    <span>Energetic / Pumped</span>
+                </button>
+                <button class="mood-btn" onclick="selectMood('sad')">
+                    <span class="mood-emoji">😢</span>
+                    <span>Melancholic</span>
+                </button>
+                <button class="mood-btn" onclick="selectMood('focus')">
+                    <span class="mood-emoji">🚀</span>
+                    <span>Focused / Calm</span>
+                </button>
+                <button class="mood-btn" onclick="selectMood('party')">
+                    <span class="mood-emoji">💃</span>
+                    <span>Party / Dance</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING ACTION TRIGGER -->
+    <button class="loop-breaker-trigger" id="widget-trigger" onclick="toggleChat(true)">
+        <svg viewBox="0 0 24 24"><path d="M12.5 3a1 1 0 0 1 1 1v2.58a8 8 0 0 1 5.92 5.92H22a1 1 0 0 1 0 2h-2.58a8 8 0 0 1-5.92 5.92V20a1 1 0 1 1-2 0v-2.58a8 8 0 0 1-5.92-5.92H3a1 1 0 1 1 0-2h2.58a8 8 0 0 1 5.92-5.92V4a1 1 0 0 1 1-1zm-1.5 5.2a6 6 0 0 0-4.3 4.3 1 1 0 1 1-1.92-.54 8 8 0 0 1 5.68-5.68 1 1 0 0 1 .54 1.92z"/></svg>
+        AI Loop Breaker
+    </button>
+
+    <!-- FOOTER PLAYBACK CONTROL BAR -->
+    <footer class="player-bar" style="position: relative; display: flex; align-items: center;">
+        
+        <!-- Left: Track Details -->
+        <div class="player-left" id="player-left-ui">
+            <div class="player-art" id="curr-player-art" style="background-image: linear-gradient(45deg, #121212 0%, #282828 100%);"></div>
+            <div class="player-song-info">
+                <span class="player-song-name" id="curr-player-title">Not Playing</span>
+                <span class="player-song-artist" id="curr-player-artist">Select a song to break the loop</span>
+            </div>
+        </div>
+
+        <!-- Center: Playback Progress -->
+        <div class="player-center" id="player-center-ui">
+            <div class="player-controls">
+                <button class="control-btn">
+                    <!-- Shuffle -->
+                    <svg viewBox="0 0 24 24"><path d="M18.084 16.498a1 1 0 1 1 1.414 1.414l-4.503 4.503a1 1 0 0 1-1.414 0l-4.503-4.503a1 1 0 0 1 1.414-1.414l2.796 2.796V12.7a5 5 0 0 0-.853-2.738 1 1 0 0 1 1.666-1.107c.725 1.09 1.187 2.378 1.187 3.845v6.594l2.796-2.796zm-7.668-8.996a1 1 0 0 1-1.666 1.107 5 5 0 0 0-.853 2.738v6.594l2.796-2.796a1 1 0 1 1 1.414 1.414l-4.503 4.503a1 1 0 0 1-1.414 0l-4.503-4.503a1 1 0 1 1 1.414-1.414l2.796 2.796V12.7c0-1.467.462-2.756 1.187-3.845z"/></svg>
+                </button>
+                <button class="control-btn">
+                    <!-- Previous -->
+                    <svg viewBox="0 0 24 24"><path d="M19 18a1 1 0 0 1-1 1H7.83l5.59-5.59a1 1 0 0 0-1.42-1.42l-7.3 7.3a1 1 0 0 0 0 1.42l7.3 7.3a1 1 0 0 0 1.42-1.42L7.83 21H18a3 3 0 0 0 3-3v-6a1 1 0 0 0-2 0v6z"/></svg>
+                </button>
+                <button class="control-btn play-pause" id="play-pause-toggle-btn" onclick="togglePlayback()">
+                    <!-- Play -->
+                    <svg viewBox="0 0 24 24" id="play-svg"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+                    <!-- Pause (hidden by default) -->
+                    <svg viewBox="0 0 24 24" id="pause-svg" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <button class="control-btn">
+                    <!-- Next -->
+                    <svg viewBox="0 0 24 24"><path d="M11.59 18.59a1 1 0 0 0 1.42 1.42l7.3-7.3a1 1 0 0 0 0-1.42l-7.3-7.3a1 1 0 0 0-1.42 1.42L17.17 11H7a3 3 0 0 0-3 3v6a1 1 0 0 0 2 0v-6a1 1 0 0 1 1-1h10.17l-5.58 5.59z"/></svg>
+                </button>
+                <button class="control-btn">
+                    <!-- Repeat -->
+                    <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                </button>
+            </div>
+            
+            <div class="playback-progress">
+                <span class="progress-time" id="progress-current">0:00</span>
+                <div class="progress-bar-bg" id="progress-bar" onclick="seekPlayback(event)">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <span class="progress-time" id="progress-total">3:42</span>
+            </div>
+        </div>
+
+        <!-- Right: Extras -->
+        <div class="player-right" id="player-right-ui">
+            <!-- Volume controls -->
+            <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #b3b3b3;"><path d="M7 9v6h4l5 5V4l-5 5H7z"/></svg>
+            <div class="volume-bar">
+                <div class="volume-fill"></div>
+            </div>
+        </div>
+
+
+
+    </footer>
+
+    <!-- --- JAVASCRIPT LOGIC --- -->
     <script>
-        const API_URL = 'http://localhost:8000/recommendations';
+        // --- 1. Music Catalog ---
+        const MUSIC_CATALOG = [
+            {"id":"t1","name":"Senorita","artist":"Yuvan Shankar Raja","language":"Tamil","genre":"Pop","era":"Latest","valence":0.8,"energy":0.9,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l"},
+            {"id":"t2","name":"Kannaana Kanney","artist":"D. Imman, Sid Sriram","language":"Tamil","genre":"Melody","era":"Latest","valence":0.6,"energy":0.4,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
+            {"id":"t3","name":"Rowdy Baby","artist":"Dhanush, Dhee","language":"Tamil","genre":"Pop","era":"Latest","valence":0.9,"energy":0.95,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S"},
+            {"id":"t4","name":"Enjoy Enjaami","artist":"Dhee, Arivu","language":"Tamil","genre":"Folk","era":"Latest","valence":0.85,"energy":0.88,"spotifyId":"3LuV91W9oDkXqB2n2cK58w"},
+            {"id":"t5","name":"Vaa Vaa","artist":"Anirudh Ravichander","language":"Tamil","genre":"Pop","era":"Latest","valence":0.82,"energy":0.85,"spotifyId":"7m9Odf223X3hWj35S6M521"},
+            {"id":"t11","name":"Roja Theme","artist":"A.R. Rahman","language":"Tamil","genre":"Melody","era":"Old","valence":0.7,"energy":0.4,"spotifyId":"1x3z3X8g2l14fS5B1D8l85"},
+            {"id":"m1","name":"Lailakame","artist":"Vineeth Sreenivasan","language":"Malayalam","genre":"Pop","era":"Latest","valence":0.9,"energy":0.8,"spotifyId":"0VjIjW4GlUZAMYd2vXMiZz"},
+            {"id":"m2","name":"Kannil Kannil","artist":"Haricharan, Shreya Ghoshal","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.8,"energy":0.65,"spotifyId":"4D4QDg8U6H3Z2g0V1z14m7"},
+            {"id":"m6","name":"Mazhaye Mazhaye","artist":"Sid Sriram","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.55,"energy":0.45,"spotifyId":"7m9Odf223X3hWj35S6M521"},
+            {"id":"m9","name":"Oru Koottil","artist":"MG Sreekumar","language":"Malayalam","genre":"Folk","era":"Old","valence":0.8,"energy":0.6,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l"},
+            {"id":"m12","name":"Pramodavanam","artist":"Yesudas","language":"Malayalam","genre":"Melody","era":"Old","valence":0.5,"energy":0.4,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
+            {"id":"h1","name":"Kesariya","artist":"Arijit Singh","language":"Hindi","genre":"Pop","era":"Latest","valence":0.75,"energy":0.7,"spotifyId":"6mP6111LwDqV4P3Dk8FhUo"},
+            {"id":"h2","name":"Raataan Lambiyan","artist":"Jubin Nautiyal, Asees Kaur","language":"Hindi","genre":"Melody","era":"Latest","valence":0.7,"energy":0.55,"spotifyId":"145FwRz32Pz12K5GfVd2c6"},
+            {"id":"h4","name":"Besharam Rang","artist":"Shilpa Rao, Caralisa Monteiro","language":"Hindi","genre":"Pop","era":"Latest","valence":0.9,"energy":0.88,"spotifyId":"0e0A2oXg573z3X8g2l14fS"},
+            {"id":"h7","name":"Apna Bana Le","artist":"Arijit Singh","language":"Hindi","genre":"Melody","era":"Latest","valence":0.6,"energy":0.5,"spotifyId":"6mP6111LwDqV4P3Dk8FhUo"},
+            {"id":"h10","name":"Kal Ho Na Ho","artist":"Sonu Nigam","language":"Hindi","genre":"Melody","era":"Old","valence":0.65,"energy":0.5,"spotifyId":"7m9Odf223X3hWj35S6M521"},
+            {"id":"h11","name":"Ek Ajnabee Haseena Se","artist":"Kishore Kumar","language":"Hindi","genre":"Pop","era":"Old","valence":0.85,"energy":0.7,"spotifyId":"3LuV91W9oDkXqB2n2cK58w"},
+            {"id":"e1","name":"Shape of You","artist":"Ed Sheeran","language":"English","genre":"Pop","era":"Latest","valence":0.93,"energy":0.84,"spotifyId":"7qiZ4U4d36W4e63mZpBvVK"},
+            {"id":"e2","name":"Blinding Lights","artist":"The Weeknd","language":"English","genre":"Pop","era":"Latest","valence":0.33,"energy":0.8,"spotifyId":"0VjIjW4GlUZAMYd2vXMiZz"},
+            {"id":"e3","name":"As It Was","artist":"Harry Styles","language":"English","genre":"Pop","era":"Latest","valence":0.74,"energy":0.73,"spotifyId":"4D4QDg8U6H3Z2g0V1z14m7"},
+            {"id":"e7","name":"Drivers License","artist":"Olivia Rodrigo","language":"English","genre":"Melody","era":"Latest","valence":0.35,"energy":0.35,"spotifyId":"7m9Odf223X3hWj35S6M521"},
+            {"id":"e8","name":"Fly Me to the Moon","artist":"Frank Sinatra","language":"English","genre":"Jazz","era":"Old","valence":0.95,"energy":0.55,"spotifyId":"7qiZ4U4d36W4e63mZpBvVK"},
+            {"id":"e11","name":"Someone Like You","artist":"Adele","language":"English","genre":"Melody","era":"Old","valence":0.29,"energy":0.36,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l"},
+            {"id":"te1","name":"Samajavaragamana","artist":"Sid Sriram","language":"Telugu","genre":"Melody","era":"Latest","valence":0.65,"energy":0.5,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
+            {"id":"te2","name":"Buttabomma","artist":"Armaan Malik","language":"Telugu","genre":"Melody","era":"Latest","valence":0.75,"energy":0.6,"spotifyId":"7215fW7aZ12Pz11K5GfVda"},
+            {"id":"te5","name":"Naatu Naatu","artist":"Rahul Sipligunj, Kaala Bhairava","language":"Telugu","genre":"Folk","era":"Latest","valence":0.95,"energy":0.97,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S"},
+            {"id":"te8","name":"Roja Jaaneman","artist":"S.P. Balasubrahmanyam, Lata Mangeshkar","language":"Telugu","genre":"Melody","era":"Old","valence":0.8,"energy":0.45,"spotifyId":"6v5674FwRz32Pz11K5GfVda"},
+            {"id":"j1","name":"Take Five","artist":"Dave Brubeck Quartet","language":"English","genre":"Jazz","era":"Old","valence":0.88,"energy":0.5,"spotifyId":"5a5674FwRz32Pz11K5GfVda"},
+            {"id":"j3","name":"Autumn Leaves","artist":"Miles Davis","language":"English","genre":"Jazz","era":"Old","valence":0.4,"energy":0.35,"spotifyId":"6b5674FwRz32Pz11K5GfVda"},
+            {"id":"j4","name":"My Funny Valentine","artist":"Chet Baker","language":"English","genre":"Jazz","era":"Old","valence":0.45,"energy":0.3,"spotifyId":"7k5674FwRz32Pz11K5GfVda"},
+            {"id":"k1","name":"Ra Ra Rakkamma","artist":"Nakash Aziz, Sunidhi Chauhan","language":"Kannada","genre":"Pop","era":"Latest","valence":0.85,"energy":0.9,"spotifyId":"3LuV91W9oDkXqB2n2cK58w"},
+            {"id":"k2","name":"Singara Siriye","artist":"Vijay Prakash, Ananya Bhat","language":"Kannada","genre":"Folk","era":"Latest","valence":0.75,"energy":0.75,"spotifyId":"5B1D8l85664r7923H24J1U"},
+            {"id":"k3","name":"Tagaru Banthu Tagaru","artist":"Anthony Daasan","language":"Kannada","genre":"Pop","era":"Latest","valence":0.8,"energy":0.85,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
+            {"id":"k4","name":"Nee Santhasa Dinda","artist":"S.P. Balasubrahmanyam","language":"Kannada","genre":"Melody","era":"Old","valence":0.7,"energy":0.5,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S"},
+            {"id":"k5","name":"Kavithe Kavithe","artist":"Vijay Prakash","language":"Kannada","genre":"Melody","era":"Old","valence":0.6,"energy":0.4,"spotifyId":"7m9Odf223X3hWj35S6M521"},
+            {"id":"b1","name":"Boba Tunnel","artist":"Anupam Roy","language":"Bengali","genre":"Melody","era":"Latest","valence":0.5,"energy":0.4,"spotifyId":"boba123"},
+            {"id":"b2","name":"Amake Amar Moto","artist":"Anupam Roy","language":"Bengali","genre":"Pop","era":"Latest","valence":0.7,"energy":0.6,"spotifyId":"amake123"},
+            {"id":"b3","name":"Rangabati","artist":"Sona Mohapatra","language":"Bengali","genre":"Folk","era":"Latest","valence":0.85,"energy":0.88,"spotifyId":"ranga123"},
+            {"id":"g1","name":"Khalasi","artist":"Aditya Gadhvi","language":"Gujarati","genre":"Folk","era":"Latest","valence":0.9,"energy":0.92,"spotifyId":"khalasi123"},
+            {"id":"g2","name":"Goti Goti","artist":"Aditya Gadhvi","language":"Gujarati","genre":"Pop","era":"Latest","valence":0.82,"energy":0.85,"spotifyId":"goti123"},
+            {"id":"g3","name":"Radha Ne Shyam","artist":"Sachin-Jigar","language":"Gujarati","genre":"Melody","era":"Latest","valence":0.6,"energy":0.45,"spotifyId":"radha123"}
+        ];
 
-        document.getElementById('prefForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // --- 2. State Variables ---
+        let currentPlaylist = [];
+        let isPlaying = false;
+        let playInterval = null;
+        let playProgress = 0; // out of 100
+        let totalPlaySeconds = 222; // dummy total duration
+        let currentTrackName = "";
+        let currentTrackArtist = "";
+        let globalAudio = null;
+        
+        let chatInitialized = false;
+
+        // --- 3. View Switcher ---
+        function showView(viewId) {
+            // Only home view remains active
+            document.getElementById('view-home').style.display = 'block';
+            document.getElementById('menu-home').classList.add('active');
+        }
+
+        // --- 4. Simulated Playlist Loader ---
+        function loadSimulatedPlaylist(type) {
+            showView('home');
+            let heading = "";
+            let songs = [];
             
-            // UI State updates
-            const btnText = document.getElementById('btnText');
-            const btnSpinner = document.getElementById('btnSpinner');
-            const initialState = document.getElementById('initialState');
-            const resultsContainer = document.getElementById('resultsContainer');
+            if (type === 'daily1') {
+                heading = "Daily Mix 1 (Safety Comfort Loop)";
+                songs = [
+                    {"name": "Kesariya", "artist": "Arijit Singh"},
+                    {"name": "Apna Bana Le", "artist": "Arijit Singh"},
+                    {"name": "Shape of You", "artist": "Ed Sheeran"}
+                ];
+            } else if (type === 'daily2') {
+                heading = "Daily Mix 2 (Regional Repetition)";
+                songs = [
+                    {"name": "Samajavaragamana", "artist": "Sid Sriram"},
+                    {"name": "Buttabomma", "artist": "Armaan Malik"},
+                    {"name": "Enjoy Enjaami", "artist": "Dhee, Arivu"}
+                ];
+            } else {
+                heading = "Liked Songs (Your Comfort Loop)";
+                songs = [
+                    {"name": "Kesariya", "artist": "Arijit Singh"},
+                    {"name": "Blinding Lights", "artist": "The Weeknd"},
+                    {"name": "Shape of You", "artist": "Ed Sheeran"}
+                ];
+            }
             
-            btnText.textContent = "Analyzing...";
-            btnSpinner.classList.remove('hidden');
-            initialState.classList.add('hidden');
-            resultsContainer.classList.add('hidden');
-            document.getElementById('cardsArea').innerHTML = '';
+            // Change title
+            const welcomeText = document.querySelector('.welcome-title');
+            welcomeText.textContent = heading;
+        }
+
+        // --- 5. Floating Chatbot Toggle ---
+        function toggleChat(show) {
+            const drawer = document.getElementById('chat-drawer');
+            const trigger = document.getElementById('widget-trigger');
             
-            // Gather data
-            const cuisinesInput = document.getElementById('cuisines').value;
-            const cuisinesList = cuisinesInput ? cuisinesInput.split(',').map(c => c.trim()) : [];
+            if (show) {
+                drawer.classList.add('open');
+                trigger.style.display = 'none';
+                if (!chatInitialized) {
+                    initiateChat();
+                }
+            } else {
+                drawer.classList.remove('open');
+                trigger.style.display = 'flex';
+            }
+        }
+
+        // --- 6. Chat Flow Engine ---
+        function appendBotMessage(content, delay = 0, isHtml = false) {
+            return new Promise((resolve) => {
+                // Render typing indicator
+                const messagesDiv = document.getElementById('chat-messages');
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'typing-indicator bot-typing';
+                typingIndicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+                messagesDiv.appendChild(typingIndicator);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+                setTimeout(() => {
+                    // Remove typing indicator
+                    typingIndicator.remove();
+                    
+                    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = 'chat-msg bot';
+                    
+                    if (isHtml) {
+                        msgDiv.innerHTML = `
+                            <div class="msg-bubble">${content}</div>
+                            <span class="msg-time">${timeStr}</span>
+                        `;
+                    } else {
+                        const bubble = document.createElement('div');
+                        bubble.className = 'msg-bubble';
+                        bubble.textContent = content;
+                        const time = document.createElement('span');
+                        time.className = 'msg-time';
+                        time.textContent = timeStr;
+                        msgDiv.appendChild(bubble);
+                        msgDiv.appendChild(time);
+                    }
+
+                    messagesDiv.appendChild(msgDiv);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    resolve();
+                }, delay);
+            });
+        }
+
+        function appendUserMessage(content) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
-            const payload = {
-                location: document.getElementById('location').value,
-                cuisines: cuisinesList,
-                min_budget: parseInt(document.getElementById('minBudget').value),
-                max_budget: parseInt(document.getElementById('maxBudget').value),
-                min_rating: parseFloat(document.getElementById('minRating').value),
-                additional_prefs: document.getElementById('additionalPrefs').value
-            };
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-msg user';
+            msgDiv.innerHTML = `
+                <div class="msg-bubble">${content}</div>
+                <span class="msg-time">${timeStr}</span>
+            `;
+            messagesDiv.appendChild(msgDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function clearActions() {
+            const actions = document.querySelectorAll('.chat-actions');
+            actions.forEach(a => a.remove());
+        }
+
+        async function initiateChat() {
+            chatInitialized = true;
+            const messagesDiv = document.getElementById('chat-messages');
+            messagesDiv.innerHTML = ''; // Clear previous
+
+            await appendBotMessage("Hey there! 🎧 I'm your AI Loop Breaker.", 500);
+            await appendBotMessage("Are you tired of listening to the same songs on repeat? I can help you steer away from comfort loops using your real-time environment (weather & location) + immediate mood vibe.", 800);
+            
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'chat-actions';
+            actionsDiv.innerHTML = `
+                <button class="chat-action-btn" onclick="startVerificationFlow()">⚡ Yes, break my loop!</button>
+                <button class="chat-action-btn" onclick="explainTheScience()">🤔 Why does my music feel repetitive?</button>
+            `;
+            messagesDiv.appendChild(actionsDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function explainTheScience() {
+            clearActions();
+            appendUserMessage("Why does my music feel repetitive?");
+            
+            await appendBotMessage("Traditional recommendation engines use 'collaborative filtering' which locks you in comfort loops. Because you played a track, it feeds you related sounds, reinforcing the exact same safety zone.", 1200);
+            await appendBotMessage("AI Loop Breaker uses explicit contextual parameters (Weather + Mood + Location) and enforces a 'Loop-Exclusion Layer' to actively block your top played comfort artists.", 1000);
+            
+            const messagesDiv = document.getElementById('chat-messages');
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'chat-actions';
+            actionsDiv.innerHTML = `
+                <button class="chat-action-btn" onclick="startVerificationFlow()">⚡ Awesome, let's break my loop!</button>
+            `;
+            messagesDiv.appendChild(actionsDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        const STATE_COORDINATES = [
+            { name: "Andhra Pradesh", lat: 16.5062, lon: 80.6480, lang: "Telugu" },
+            { name: "Arunachal Pradesh", lat: 27.0844, lon: 93.6053, lang: "Hindi" },
+            { name: "Assam", lat: 26.1445, lon: 91.7905, lang: "Hindi" },
+            { name: "Bihar", lat: 25.5941, lon: 85.1376, lang: "Hindi" },
+            { name: "Chhattisgarh", lat: 21.2514, lon: 81.6296, lang: "Hindi" },
+            { name: "Goa", lat: 15.4909, lon: 73.8278, lang: "Hindi" },
+            { name: "Gujarat", lat: 23.2156, lon: 72.6369, lang: "Gujarati" },
+            { name: "Haryana", lat: 30.7333, lon: 76.7794, lang: "Hindi" },
+            { name: "Himachal Pradesh", lat: 31.1048, lon: 77.1734, lang: "Hindi" },
+            { name: "Jharkhand", lat: 23.3441, lon: 85.3096, lang: "Hindi" },
+            { name: "Karnataka", lat: 12.9716, lon: 77.5946, lang: "Kannada" },
+            { name: "Kerala", lat: 8.5241, lon: 76.9366, lang: "Malayalam" },
+            { name: "Madhya Pradesh", lat: 23.2599, lon: 77.4126, lang: "Hindi" },
+            { name: "Maharashtra", lat: 19.0760, lon: 72.8777, lang: "Hindi" },
+            { name: "Manipur", lat: 24.8170, lon: 93.9368, lang: "Hindi" },
+            { name: "Meghalaya", lat: 25.5788, lon: 91.8931, lang: "Hindi" },
+            { name: "Mizoram", lat: 23.7307, lon: 92.7173, lang: "Hindi" },
+            { name: "Nagaland", lat: 25.6751, lon: 94.1086, lang: "Hindi" },
+            { name: "Odisha", lat: 20.2961, lon: 85.8245, lang: "Hindi" },
+            { name: "Punjab", lat: 30.7934, lon: 75.9212, lang: "Hindi" },
+            { name: "Rajasthan", lat: 26.9124, lon: 75.7873, lang: "Hindi" },
+            { name: "Sikkim", lat: 27.3314, lon: 88.6138, lang: "Hindi" },
+            { name: "Tamil Nadu", lat: 13.0827, lon: 80.2707, lang: "Tamil" },
+            { name: "Telangana", lat: 17.3850, lon: 78.4867, lang: "Telugu" },
+            { name: "Tripura", lat: 23.8315, lon: 91.2868, lang: "Hindi" },
+            { name: "Uttar Pradesh", lat: 26.8467, lon: 80.9462, lang: "Hindi" },
+            { name: "Uttarakhand", lat: 30.3165, lon: 78.0322, lang: "Hindi" },
+            { name: "West Bengal", lat: 22.5726, lon: 88.3639, lang: "Bengali" },
+            { name: "Delhi", lat: 28.6139, lon: 77.2090, lang: "Hindi" },
+            { name: "Jammu & Kashmir", lat: 34.0837, lon: 74.7973, lang: "Hindi" },
+            { name: "Ladakh", lat: 34.1526, lon: 77.5771, lang: "Hindi" },
+            { name: "Puducherry", lat: 11.9416, lon: 79.8083, lang: "Tamil" }
+        ];
+
+        function getClosestState(lat, lon) {
+            let closest = STATE_COORDINATES[0];
+            let minDist = Infinity;
+            
+            STATE_COORDINATES.forEach(state => {
+                let dist = Math.sqrt(Math.pow(state.lat - lat, 2) + Math.pow(state.lon - lon, 2));
+                if (dist < minDist) {
+                    minDist = dist;
+                    closest = state;
+                }
+            });
+            return closest;
+        }
+
+        function getLanguagesForState(stateName) {
+            if (!stateName) return ["Hindi"];
+            const normalized = stateName.toLowerCase();
+            const found = STATE_COORDINATES.find(s => normalized.includes(s.name.toLowerCase()) || s.name.toLowerCase().includes(normalized));
+            if (found) {
+                if (found.name === "West Bengal") return ["Bengali", "Hindi"];
+                if (found.name === "Gujarat") return ["Gujarati", "Hindi"];
+                return [found.lang];
+            }
+            return ["Hindi"];
+        }
+
+        function getLanguageForState(stateName) {
+            const langs = getLanguagesForState(stateName);
+            return langs[0];
+        }
+        
+        function getCanonicalStateName(stateName) {
+            if (!stateName) return "Maharashtra";
+            const normalized = stateName.toLowerCase();
+            const found = STATE_COORDINATES.find(s => normalized.includes(s.name.toLowerCase()) || s.name.toLowerCase().includes(normalized));
+            return found ? found.name : "Maharashtra";
+        }
+
+        function getBrowserCoords() {
+            return new Promise((resolve, reject) => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => resolve({ lat: position.coords.latitude, lon: position.coords.longitude }),
+                        (error) => reject(error),
+                        { timeout: 4000 }
+                    );
+                } else {
+                    reject("Not supported");
+                }
+            });
+        }
+
+        async function detectRealLocationAndWeather() {
+            let city = "Mumbai";
+            let state = "";
+            let country = "India";
+            let weatherType = "Sunny";
+            let temp = 28;
+            let lat = 19.076;
+            let lon = 72.8775;
+            let resolvedMethod = "IP Fallback";
 
             try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                // Try browser GPS first (which prompts the user)
+                const coords = await getBrowserCoords();
+                lat = coords.lat;
+                lon = coords.lon;
+                resolvedMethod = "GPS Sensor";
                 
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
+                // Map closest state based on physical coordinate distance
+                const matched = getClosestState(lat, lon);
+                state = matched.name;
+                city = state;
+                country = "India";
+            } catch (e) {
+                console.log("Browser GPS request declined or failed, trying HTTP Geolocation IP API:", e);
+                // Fallback 1: ip-api.com (HTTP friendly, free, reliable regionName)
+                try {
+                    const geoRes = await fetch("http://ip-api.com/json/");
+                    if (geoRes.ok) {
+                        const geoData = await geoRes.json();
+                        if (geoData.status === "success") {
+                            state = geoData.regionName || state;
+                            city = geoData.city || state;
+                            country = geoData.country || country;
+                            lat = geoData.lat || lat;
+                            lon = geoData.lon || lon;
+                            resolvedMethod = "IP Geolocation (ip-api)";
+                        } else {
+                            throw new Error("ip-api status failed");
+                        }
+                    } else {
+                        throw new Error("ip-api response not ok");
+                    }
+                } catch (err) {
+                    console.log("ip-api failed, trying ipapi.co HTTPS fallback:", err);
+                    // Fallback 2: ipapi.co (HTTPS backup)
+                    try {
+                        const geoRes2 = await fetch("https://ipapi.co/json/");
+                        if (geoRes2.ok) {
+                            const geoData2 = await geoRes2.json();
+                            state = geoData2.region || state;
+                            city = geoData2.city || state;
+                            country = geoData2.country_name || country;
+                            lat = geoData2.latitude || lat;
+                            lon = geoData2.longitude || lon;
+                            resolvedMethod = "IP Geolocation (ipapi.co)";
+                        }
+                    } catch (err2) {
+                        console.error("All Geolocation IP APIs failed:", err2);
+                    }
                 }
-                
-                const data = await response.json();
-                
-                // Render Results
-                document.getElementById('resultSummary').textContent = data.summary;
-                
-                const cardsArea = document.getElementById('cardsArea');
-                if (data.recommendations && data.recommendations.length > 0) {
-                    data.recommendations.forEach(rec => {
-                        const card = document.createElement('div');
-                        card.className = "bg-gray-800 border-l-4 border-zomato rounded-r-xl p-6 shadow-md hover:shadow-lg transition-shadow";
-                        card.innerHTML = `
-                            <div class="flex items-center mb-3">
-                                <span class="bg-zomato text-white text-sm font-bold px-3 py-1 rounded-full mr-3">#${rec.rank || '-'}</span>
-                                <h4 class="text-xl font-bold text-gray-100">${rec.name}</h4>
-                            </div>
-                            <p class="text-gray-400 leading-relaxed pl-12">${rec.explanation}</p>
-                        `;
-                        cardsArea.appendChild(card);
-                    });
-                }
-                
-                resultsContainer.classList.remove('hidden');
-                
-            } catch (err) {
-                alert("Failed to fetch recommendations. Ensure the FastAPI backend is running on port 8000.\nError: " + err.message);
-                initialState.classList.remove('hidden');
-            } finally {
-                btnText.textContent = "🔍 Find Restaurants";
-                btnSpinner.classList.add('hidden');
             }
+
+            try {
+                // Fetch actual live weather from Open-Meteo
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                if (weatherRes.ok) {
+                    const weatherData = await weatherRes.json();
+                    temp = Math.round(weatherData.current_weather.temperature);
+                    const code = weatherData.current_weather.weathercode;
+                    
+                    // Map WMO Weather Codes to our states (Rainy, Sunny, Cold, Overcast)
+                    if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) {
+                        weatherType = "Rainy";
+                    } else if ([0, 1].includes(code)) {
+                        weatherType = "Sunny";
+                    } else if ([2, 3].includes(code)) {
+                        weatherType = "Overcast";
+                    } else if (temp < 18) {
+                        weatherType = "Cold";
+                    } else {
+                        weatherType = "Overcast"; // default fallback
+                    }
+                }
+            } catch (e) {
+                console.error("Weather fetch failed, using default weather:", e);
+            }
+
+            return { city, state, country, weatherType, temp, resolvedMethod };
+        }
+
+        async function startVerificationFlow() {
+            clearActions();
+            appendUserMessage("Break my loop!");
+
+            const useRealtime = document.getElementById('sandbox-realtime').checked;
+            let loc = "";
+            let weather = "";
+            let detectedTemp = "";
+            let detectedLocationText = "";
+
+            if (useRealtime) {
+                await appendBotMessage("Querying real-time sensor parameters...", 600);
+                const realData = await detectRealLocationAndWeather();
+                
+                // Map the resolved state name to the catalog region
+                const detectedState = realData.state;
+                const canonicalState = getCanonicalStateName(detectedState);
+
+                // Update controls silently
+                document.getElementById('sandbox-location').value = canonicalState;
+                document.getElementById('sandbox-weather').value = realData.weatherType;
+
+                loc = canonicalState;
+                weather = realData.weatherType;
+                detectedTemp = `${realData.temp}°C`;
+                detectedLocationText = `${canonicalState}, ${realData.country} (${realData.resolvedMethod})`;
+            } else {
+                loc = document.getElementById('sandbox-location').value;
+                weather = document.getElementById('sandbox-weather').value;
+                detectedTemp = weather === 'Rainy' ? '22°C' : weather === 'Sunny' ? '31°C' : weather === 'Cold' ? '16°C' : '25°C';
+                detectedLocationText = `${loc}, India (Simulated)`;
+            }
+
+            const isNonNative = document.getElementById('sandbox-nonnative').checked;
+            const historyLang = document.getElementById('sandbox-history-lang').value;
+
+            // Render context detection card
+            const weatherEmoji = weather === 'Rainy' ? '🌧️' : weather === 'Sunny' ? '☀️' : weather === 'Cold' ? '❄️' : '☁️';
+            const contextCardHtml = `
+                <strong>📍 GPS Location detected:</strong> ${detectedLocationText}<br>
+                <strong>${weatherEmoji} Local Weather:</strong> ${weather} (${detectedTemp})
+            `;
+            await appendBotMessage(contextCardHtml, 800, true);
+
+            // 2. Language Adaptability Step
+            await appendBotMessage("Running language resolution check...", 500);
+            
+            let languageNotice = "";
+            const nativeLang = getLanguageForState(loc);
+
+            if (isNonNative) {
+                languageNotice = `
+                    <strong>⚠️ Non-Native Visitor Mode:</strong> GPS reports ${loc} (local state language is typically ${nativeLang}).<br><br>
+                    However, scanning your playlists reveals a majority language preference for <strong>${historyLang} & English</strong>.<br><br>
+                    <strong>Action:</strong> System is overriding local GPS dialects to prioritize recommendations in <strong>${historyLang} & English</strong>!
+                `;
+            } else {
+                languageNotice = `
+                    <strong>✅ Native Visitor Mode:</strong> GPS reports ${loc}. Matching native language playback profile: <strong>${nativeLang} & English</strong>.
+                `;
+            }
+            await appendBotMessage(languageNotice, 1200, true);
+
+            // 3. Trigger Mood selection pop-up
+            await appendBotMessage("Now, tell me how you want to feel. I'll open the mood selection box.", 600);
+            
+            setTimeout(() => {
+                document.getElementById('mood-selector-overlay').classList.add('open');
+            }, 800);
+        }
+
+        // --- 7. Mood Selection Callback & Recommendation Processing ---
+        function selectMood(mood) {
+            // Hide mood modal
+            document.getElementById('mood-selector-overlay').classList.remove('open');
+            
+            const moodTextMap = {
+                'chill': '😌 Cozy / Chill',
+                'energetic': '⚡ Energetic / Pumped',
+                'sad': '😢 Melancholic',
+                'focus': '🚀 Focused / Calm',
+                'party': '💃 Party / Dance'
+            };
+            
+            appendUserMessage(`My mood is: ${moodTextMap[mood]}`);
+            generateRecommendations(mood);
+        }
+
+        async function generateRecommendations(mood) {
+            await appendBotMessage("Processing parameters. Mapping your contextual inputs to acoustic audio attributes (Valence & Energy) and filtering comfort loop exclusions...", 800);
+
+            const loc = document.getElementById('sandbox-location').value;
+            const weather = document.getElementById('sandbox-weather').value;
+            const isNonNative = document.getElementById('sandbox-nonnative').checked;
+            const historyLang = document.getElementById('sandbox-history-lang').value;
+
+            // Define target valence & energy based on Weather + Mood
+            let targetValence = 0.5;
+            let targetEnergy = 0.5;
+            
+            if (mood === 'chill') { targetValence = 0.5; targetEnergy = 0.35; }
+            else if (mood === 'energetic') { targetValence = 0.85; targetEnergy = 0.9; }
+            else if (mood === 'sad') { targetValence = 0.25; targetEnergy = 0.3; }
+            else if (mood === 'focus') { targetValence = 0.6; targetEnergy = 0.45; }
+            else if (mood === 'party') { targetValence = 0.9; targetEnergy = 0.95; }
+
+            // Apply weather modifier
+            if (weather === 'Rainy') { targetValence -= 0.1; targetEnergy -= 0.1; }
+            else if (weather === 'Sunny') { targetValence += 0.1; targetEnergy += 0.15; }
+            else if (weather === 'Cold') { targetEnergy -= 0.05; }
+            else if (weather === 'Overcast') { targetValence -= 0.15; }
+
+            // Ensure bounds
+            targetValence = Math.max(0.1, Math.min(0.99, targetValence));
+            targetEnergy = Math.max(0.1, Math.min(0.99, targetEnergy));
+
+            // Determine Target Languages (Native region + Expat majority playlist language overrides)
+            const nativeLangs = getLanguagesForState(loc);
+
+            let targetLangs = [];
+            if (isNonNative) {
+                // If non-native expat, override native languages with history preference & English
+                targetLangs = [historyLang, "English"];
+            } else {
+                // Native visitor gets all native state languages (e.g. Bengali & Hindi) + English
+                targetLangs = [...nativeLangs, "English"];
+            }
+            
+            // Remove duplicates
+            targetLangs = [...new Set(targetLangs)];
+
+            // Filter and score all songs in the catalog matching target languages
+            let scoredSongs = MUSIC_CATALOG.filter(song => targetLangs.includes(song.language))
+                .map(song => {
+                    const dist = Math.sqrt(Math.pow(song.valence - targetValence, 2) + Math.pow(song.energy - targetEnergy, 2));
+                    return { ...song, dist: dist };
+                });
+            scoredSongs.sort((a, b) => a.dist - b.dist);
+
+            // Take top 4 recommendations
+            let recommendations = scoredSongs.slice(0, 4);
+
+            await appendBotMessage(`Successfully mapped targets:<br>🎯 <strong>Target Valence:</strong> ${targetValence.toFixed(2)}<br>⚡ <strong>Target Energy:</strong> ${targetEnergy.toFixed(2)}<br>🎶 <strong>Filtered Languages:</strong> ${targetLangs.join(" / ")}`, 1000, true);
+            await appendBotMessage("Here are your loop-breaking songs selected specifically for this exact moment! Click 'Play' on any song to hear it:", 800);
+
+            // Render Song Cards in Chat
+            recommendations.forEach(song => {
+                const colors = ['#f5576c', '#3cba92', '#b8860b', '#4b2bb9', '#141e30'];
+                const cardColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                const songCardHtml = `
+                    <div class="rec-song-item">
+                        <div class="song-meta">
+                            <div class="song-left">
+                                <div class="song-art-mini" style="background-color: ${cardColor}; background-image: linear-gradient(135deg, ${cardColor}, #000000);"></div>
+                                <div class="song-info">
+                                    <span class="song-name">${song.name}</span>
+                                    <span class="song-artist">${song.artist}</span>
+                                    <span style="font-size:10px; color:#1db954; font-weight:700; margin-top:2px;">[Language: ${song.language}]</span>
+                                </div>
+                            </div>
+                            <button class="song-play-mini" onclick="playSong('${song.name.replace(/'/g, "\\'")}', '${song.artist.replace(/'/g, "\\'")}', '${cardColor}', '${song.spotifyId}')">
+                                <svg viewBox="0 0 24 24"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+                            </button>
+                        </div>
+                        <div class="song-explanation">
+                            <strong>AI Insight:</strong> Matches ${mood} mood for a ${weather.toLowerCase()} day. It has <strong>${song.valence.toFixed(2)} valence</strong> and <strong>${song.energy.toFixed(2)} energy</strong>. This shifts you outside your usual artist loop.
+                        </div>
+                    </div>
+                `;
+                appendBotMessage(songCardHtml, 400, true);
+            });
+
+            // Re-render chat options
+            setTimeout(() => {
+                const messagesDiv = document.getElementById('chat-messages');
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'chat-actions';
+                actionsDiv.innerHTML = `
+                    <button class="chat-action-btn" onclick="startVerificationFlow()">🔄 Try different mood/weather settings</button>
+                    <button class="chat-action-btn" onclick="initiateChat()">💬 Go to beginning</button>
+                `;
+                messagesDiv.appendChild(actionsDiv);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 2500);
+        }
+
+        function onRealtimeCheckboxChange() {
+            const useRealtime = document.getElementById('sandbox-realtime').checked;
+            document.getElementById('sandbox-location').disabled = useRealtime;
+            document.getElementById('sandbox-weather').disabled = useRealtime;
+            
+            if (useRealtime) {
+                document.getElementById('sandbox-location').style.opacity = 0.5;
+                document.getElementById('sandbox-weather').style.opacity = 0.5;
+            } else {
+                document.getElementById('sandbox-location').style.opacity = 1.0;
+                document.getElementById('sandbox-weather').style.opacity = 1.0;
+            }
+
+            onDevSandboxChange();
+        }
+
+        // --- 8. Dev Sandbox Callback ---
+        function onDevSandboxChange() {
+            const isNonNative = document.getElementById('sandbox-nonnative').checked;
+            const historyGroup = document.getElementById('history-lang-group');
+            if (isNonNative) {
+                historyGroup.style.display = 'flex';
+            } else {
+                historyGroup.style.display = 'none';
+            }
+            if (chatInitialized) {
+                // Clear the chat log completely before restarting to prevent overlapping message history
+                const messagesDiv = document.getElementById('chat-messages');
+                messagesDiv.innerHTML = '';
+                // Instantly restart verification flow to reflect the new location/weather settings
+                startVerificationFlow();
+            }
+        }
+
+        // --- 9. Playback Control Engine ---
+        function playSong(name, artist, colorCode) {
+            isPlaying = true;
+            currentTrackName = name;
+            currentTrackArtist = artist;
+
+            // Populate mock player bar details
+            document.getElementById('curr-player-title').textContent = name;
+            document.getElementById('curr-player-artist').textContent = artist;
+            document.getElementById('curr-player-art').style.backgroundImage = `linear-gradient(135deg, ${colorCode}, #000000)`;
+
+            // Update SVGs in play toggle button to "pause"
+            document.getElementById('play-svg').style.display = 'none';
+            document.getElementById('pause-svg').style.display = 'block';
+
+            // Reset progress bar
+            playProgress = 0;
+            updateProgressBar();
+
+            // Clear previous play timers and audios
+            if (playInterval) clearInterval(playInterval);
+            if (globalAudio) {
+                globalAudio.pause();
+                globalAudio = null;
+            }
+
+            // Real-time audio streams (royalty-free instrumental/background tracks)
+            const audioUrls = [
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
+            ];
+            
+            // Map track based on song name string sum hash to ensure consistency
+            let charSum = 0;
+            for (let i = 0; i < name.length; i++) {
+                charSum += name.charCodeAt(i);
+            }
+            const trackIndex = charSum % audioUrls.length;
+            const selectedUrl = audioUrls[trackIndex];
+
+            // Initialize global audio element
+            globalAudio = new Audio(selectedUrl);
+            
+            // Listeners to sync with real progress
+            globalAudio.addEventListener('loadedmetadata', () => {
+                totalPlaySeconds = Math.floor(globalAudio.duration);
+                const mins = Math.floor(totalPlaySeconds / 60);
+                const secs = totalPlaySeconds % 60;
+                document.getElementById('progress-total').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            });
+            
+            globalAudio.addEventListener('timeupdate', () => {
+                if (globalAudio && globalAudio.duration) {
+                    playProgress = (globalAudio.currentTime / globalAudio.duration) * 100;
+                    updateProgressBar();
+                }
+            });
+            
+            globalAudio.addEventListener('ended', () => {
+                isPlaying = false;
+                document.getElementById('play-svg').style.display = 'block';
+                document.getElementById('pause-svg').style.display = 'none';
+                playProgress = 0;
+                updateProgressBar();
+            });
+
+            // Start audio stream
+            globalAudio.play().catch(e => {
+                console.log("Autoplay blocked by browser. User interaction required:", e);
+            });
+        }
+
+        function playMockRepeatedTrack(name, artist) {
+            playSong(name, artist, '#1db954');
+        }
+
+        function togglePlayback() {
+            if (currentTrackName === "" || !globalAudio) {
+                return;
+            }
+            isPlaying = !isPlaying;
+
+            if (isPlaying) {
+                document.getElementById('play-svg').style.display = 'none';
+                document.getElementById('pause-svg').style.display = 'block';
+                globalAudio.play().catch(e => console.log(e));
+            } else {
+                document.getElementById('play-svg').style.display = 'block';
+                document.getElementById('pause-svg').style.display = 'none';
+                globalAudio.pause();
+            }
+        }
+
+        function seekPlayback(event) {
+            if (currentTrackName === "" || !globalAudio || !globalAudio.duration) return;
+            const bar = document.getElementById('progress-bar');
+            const rect = bar.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const width = rect.width;
+            const percentage = clickX / width;
+            
+            globalAudio.currentTime = percentage * globalAudio.duration;
+            playProgress = percentage * 100;
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            document.getElementById('progress-fill').style.width = playProgress + '%';
+            
+            // Format current elapsed seconds
+            const currentSeconds = Math.floor((playProgress / 100) * totalPlaySeconds);
+            const mins = Math.floor(currentSeconds / 60);
+            const secs = currentSeconds % 60;
+            document.getElementById('progress-current').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Show onboarding popup and run auto-detection on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Run location request or prompt browser GPS
+            try {
+                const realData = await detectRealLocationAndWeather();
+                
+                const detectedState = realData.state;
+                const canonicalState = getCanonicalStateName(detectedState);
+
+                document.getElementById('sandbox-location').value = canonicalState;
+                document.getElementById('sandbox-weather').value = realData.weatherType;
+            } catch (err) {
+                console.error("Auto-detect on load failed:", err);
+            }
+
+            setTimeout(() => {
+                document.getElementById('onboarding-popup').classList.add('open');
+            }, 1000);
         });
+
+        function closeOnboarding(openChat = false) {
+            document.getElementById('onboarding-popup').classList.remove('open');
+            if (openChat) {
+                setTimeout(() => {
+                    toggleChat(true);
+                }, 400);
+            }
+        }
     </script>
+    
+    <!-- ONBOARDING MODAL POP-UP -->
+    <div class="onboarding-overlay" id="onboarding-popup">
+        <div class="onboarding-modal">
+            <div class="onboarding-badge">New Feature Update</div>
+            <div class="onboarding-icon">
+                <svg viewBox="0 0 24 24" style="fill: #000000; width: 36px; height: 36px;">
+                    <path d="M12.5 3a1 1 0 0 1 1 1v2.58a8 8 0 0 1 5.92 5.92H22a1 1 0 0 1 0 2h-2.58a8 8 0 0 1-5.92 5.92V20a1 1 0 1 1-2 0v-2.58a8 8 0 0 1-5.92-5.92H3a1 1 0 1 1 0-2h2.58a8 8 0 0 1 5.92-5.92V4a1 1 0 0 1 1-1zm-1.5 5.2a6 6 0 0 0-4.3 4.3 1 1 0 1 1-1.92-.54 8 8 0 0 1 5.68-5.68 1 1 0 0 1 .54 1.92z"/>
+                </svg>
+            </div>
+            <h2 class="onboarding-title">Introducing AI Loop Breaker ⚡</h2>
+            <p class="onboarding-desc">
+                We detected that you've been listening to the same comfort loops. Escape the safety echo chambers with our brand new <strong>AI Contextual music discoverer</strong>! 
+                <br><br>
+                It detects your real-world location weather and scans your play history. Access it anytime at the bottom-right corner.
+            </p>
+            <button class="onboarding-btn" onclick="closeOnboarding(true)">Try It Now! 🎧</button>
+        </div>
+    </div>
 </body>
 </html>
