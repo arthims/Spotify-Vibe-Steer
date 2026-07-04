@@ -2438,89 +2438,43 @@
 
             // Reset progress bar
             playProgress = 0;
+            totalPlaySeconds = 180; // Default simulated track length (3:00)
+            
+            // Adjust length slightly based on name to simulate varied track lengths
+            let charSum = 0;
+            for (let i = 0; i < name.length; i++) {
+                charSum += name.charCodeAt(i);
+            }
+            totalPlaySeconds += (charSum % 60); // 180 to 240 seconds (3:00 to 4:00)
+
+            const mins = Math.floor(totalPlaySeconds / 60);
+            const secs = totalPlaySeconds % 60;
+            document.getElementById('progress-total').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
             updateProgressBar();
 
             // Clear previous play timers and audios
             if (playInterval) clearInterval(playInterval);
             if (globalAudio) {
-                globalAudio.pause();
+                try {
+                    globalAudio.pause();
+                } catch(e){}
                 globalAudio = null;
             }
 
-            // Look up song details in MUSIC_CATALOG
-            const song = MUSIC_CATALOG.find(s => s.name === name);
-            let energy = 0.5;
-            let playbackRate = 1.0;
-            if (song) {
-                energy = song.energy || 0.5;
-                playbackRate = 0.85 + (energy * 0.3); // maps [0, 1] to [0.85, 1.15]
-            }
-
-            // Real-time audio streams (16 distinct royalty-free tracks)
-            const audioUrls = [
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3"
-            ];
-            
-            // Map track based on song name string sum hash to ensure consistency
-            let charSum = 0;
-            for (let i = 0; i < name.length; i++) {
-                charSum += name.charCodeAt(i);
-            }
-            const trackIndex = charSum % audioUrls.length;
-            const selectedUrl = audioUrls[trackIndex];
-
-            // Initialize global audio element
-            globalAudio = new Audio(selectedUrl);
-            
-            // Adjust playback speed dynamically to match valence/energy characteristics
-            globalAudio.addEventListener('canplay', () => {
-                if (globalAudio) {
-                    globalAudio.playbackRate = playbackRate;
-                }
-            });
-            
-            // Listeners to sync with real progress
-            globalAudio.addEventListener('loadedmetadata', () => {
-                totalPlaySeconds = Math.floor(globalAudio.duration);
-                const mins = Math.floor(totalPlaySeconds / 60);
-                const secs = totalPlaySeconds % 60;
-                document.getElementById('progress-total').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-            });
-            
-            globalAudio.addEventListener('timeupdate', () => {
-                if (globalAudio && globalAudio.duration) {
-                    playProgress = (globalAudio.currentTime / globalAudio.duration) * 100;
+            // Simulated progress increment interval (no real audio output)
+            playInterval = setInterval(() => {
+                if (isPlaying) {
+                    playProgress += (100 / totalPlaySeconds);
+                    if (playProgress >= 100) {
+                        playProgress = 100;
+                        isPlaying = false;
+                        document.getElementById('play-svg').style.display = 'block';
+                        document.getElementById('pause-svg').style.display = 'none';
+                        clearInterval(playInterval);
+                    }
                     updateProgressBar();
                 }
-            });
-            
-            globalAudio.addEventListener('ended', () => {
-                isPlaying = false;
-                document.getElementById('play-svg').style.display = 'block';
-                document.getElementById('pause-svg').style.display = 'none';
-                playProgress = 0;
-                updateProgressBar();
-            });
-
-            // Start audio stream
-            globalAudio.play().catch(e => {
-                console.log("Autoplay blocked by browser. User interaction required:", e);
-            });
+            }, 1000);
         }
 
         function playMockRepeatedTrack(name, artist) {
@@ -2528,7 +2482,7 @@
         }
 
         function togglePlayback() {
-            if (currentTrackName === "" || !globalAudio) {
+            if (currentTrackName === "") {
                 return;
             }
             isPlaying = !isPlaying;
@@ -2536,23 +2490,36 @@
             if (isPlaying) {
                 document.getElementById('play-svg').style.display = 'none';
                 document.getElementById('pause-svg').style.display = 'block';
-                globalAudio.play().catch(e => console.log(e));
+                // Resume simulation interval
+                if (playInterval) clearInterval(playInterval);
+                playInterval = setInterval(() => {
+                    if (isPlaying) {
+                        playProgress += (100 / totalPlaySeconds);
+                        if (playProgress >= 100) {
+                            playProgress = 100;
+                            isPlaying = false;
+                            document.getElementById('play-svg').style.display = 'block';
+                            document.getElementById('pause-svg').style.display = 'none';
+                            clearInterval(playInterval);
+                        }
+                        updateProgressBar();
+                    }
+                }, 1000);
             } else {
                 document.getElementById('play-svg').style.display = 'block';
                 document.getElementById('pause-svg').style.display = 'none';
-                globalAudio.pause();
+                if (playInterval) clearInterval(playInterval);
             }
         }
 
         function seekPlayback(event) {
-            if (currentTrackName === "" || !globalAudio || !globalAudio.duration) return;
+            if (currentTrackName === "") return;
             const bar = document.getElementById('progress-bar');
             const rect = bar.getBoundingClientRect();
             const clickX = event.clientX - rect.left;
             const width = rect.width;
             const percentage = clickX / width;
             
-            globalAudio.currentTime = percentage * globalAudio.duration;
             playProgress = percentage * 100;
             updateProgressBar();
         }
