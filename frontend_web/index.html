@@ -2235,12 +2235,18 @@
             }
             await appendBotMessage(languageNotice, 1200, true);
 
-            // 3. Trigger Mood selection pop-up
-            await appendBotMessage("Now, tell me how you want to feel. I'll open the mood selection box.", 600);
-            
-            setTimeout(() => {
-                document.getElementById('mood-selector-overlay').classList.add('open');
-            }, 800);
+            // 3. Conditional Flow check: Real-time location vs. simulated offline location
+            if (useRealtime) {
+                await appendBotMessage("📍 Live Location & Weather is active. Analyzing weather parameters to recommend songs matching your ambient physical environment directly...", 800);
+                setTimeout(() => {
+                    generateRecommendations(null);
+                }, 1000);
+            } else {
+                await appendBotMessage("ℹ️ Location auto-detect is simulated/off (weather is not predictable). Please select a mood vibe to help direct recommendations:", 600);
+                setTimeout(() => {
+                    document.getElementById('mood-selector-overlay').classList.add('open');
+                }, 800);
+            }
         }
 
         // --- 7. Mood Selection Callback & Recommendation Processing ---
@@ -2272,29 +2278,33 @@
             let targetValence = 0.5;
             let targetEnergy = 0.5;
             
-            if (mood === 'chill') { targetValence = 0.5; targetEnergy = 0.35; }
-            else if (mood === 'energetic') { targetValence = 0.85; targetEnergy = 0.9; }
-            else if (mood === 'sad') { targetValence = 0.25; targetEnergy = 0.3; }
-            else if (mood === 'focus') { targetValence = 0.6; targetEnergy = 0.45; }
-            else if (mood === 'party') { targetValence = 0.9; targetEnergy = 0.95; }
+            if (mood) {
+                if (mood === 'chill') { targetValence = 0.5; targetEnergy = 0.35; }
+                else if (mood === 'energetic') { targetValence = 0.85; targetEnergy = 0.9; }
+                else if (mood === 'sad') { targetValence = 0.25; targetEnergy = 0.3; }
+                else if (mood === 'focus') { targetValence = 0.6; targetEnergy = 0.45; }
+                else if (mood === 'party') { targetValence = 0.9; targetEnergy = 0.95; }
+            } else {
+                // If location is enabled, mood is skipped and target values are based solely on weather!
+                if (weather === 'Rainy') { targetValence = 0.35; targetEnergy = 0.25; }
+                else if (weather === 'Sunny') { targetValence = 0.8; targetEnergy = 0.85; }
+                else if (weather === 'Cold') { targetValence = 0.5; targetEnergy = 0.35; }
+                else if (weather === 'Overcast') { targetValence = 0.4; targetEnergy = 0.45; }
+            }
 
-            // Apply weather modifier
+            // Apply weather modifier if mood was specified (to refine it)
             let weatherDescription = "";
             if (weather === 'Rainy') { 
-                targetValence -= 0.15; 
-                targetEnergy -= 0.2; 
+                if (mood) { targetValence -= 0.15; targetEnergy -= 0.2; }
                 weatherDescription = "🌦️ Since the weather is Rainy, the AI is prioritizing slower, cozy acoustic melodies.";
             } else if (weather === 'Sunny') { 
-                targetValence += 0.15; 
-                targetEnergy += 0.2; 
+                if (mood) { targetValence += 0.15; targetEnergy += 0.2; }
                 weatherDescription = "☀️ Since the weather is Sunny, the AI is prioritizing bright, high-energy pop and folk beats.";
             } else if (weather === 'Cold') { 
-                targetValence -= 0.05; 
-                targetEnergy -= 0.15; 
+                if (mood) { targetValence -= 0.05; targetEnergy -= 0.15; }
                 weatherDescription = "❄️ Since the weather is Cold, the AI is prioritizing warm, atmospheric jazz and acoustic tunes.";
             } else if (weather === 'Overcast') { 
-                targetValence -= 0.1; 
-                targetEnergy -= 0.05; 
+                if (mood) { targetValence -= 0.1; targetEnergy -= 0.05; }
                 weatherDescription = "☁️ Since the weather is Overcast, the AI is prioritizing smooth, melancholic and focused melodies.";
             }
 
@@ -2328,7 +2338,11 @@
             // Take top 4 recommendations
             let recommendations = scoredSongs.slice(0, 4);
 
-            await appendBotMessage(`Successfully mapped targets:<br>🎯 <strong>Target Valence:</strong> ${targetValence.toFixed(2)}<br>⚡ <strong>Target Energy:</strong> ${targetEnergy.toFixed(2)}<br>🎶 <strong>Filtered Languages:</strong> ${targetLangs.join(" / ")}<br><br>${weatherDescription}`, 1000, true);
+            let msg = `Successfully mapped targets:<br>🎯 <strong>Target Valence:</strong> ${targetValence.toFixed(2)}<br>⚡ <strong>Target Energy:</strong> ${targetEnergy.toFixed(2)}<br>🎶 <strong>Filtered Languages:</strong> ${targetLangs.join(" / ")}<br><br>${weatherDescription}`;
+            if (mood) {
+                msg = `Successfully mapped targets (Mood: ${mood}):<br>🎯 <strong>Target Valence:</strong> ${targetValence.toFixed(2)}<br>⚡ <strong>Target Energy:</strong> ${targetEnergy.toFixed(2)}<br>🎶 <strong>Filtered Languages:</strong> ${targetLangs.join(" / ")}<br><br>${weatherDescription}`;
+            }
+            await appendBotMessage(msg, 1000, true);
             await appendBotMessage("Here are your loop-breaking songs selected specifically for this exact moment! Click 'Play' on any song to hear it:", 800);
 
             // Render Song Cards in Chat
@@ -2352,7 +2366,7 @@
                             </button>
                         </div>
                         <div class="song-explanation">
-                            <strong>AI Insight:</strong> Matches ${mood} mood for a ${weather.toLowerCase()} day. It has <strong>${song.valence.toFixed(2)} valence</strong> and <strong>${song.energy.toFixed(2)} energy</strong>. This shifts you outside your usual artist loop.
+                            <strong>AI Insight:</strong> Matches ${mood ? mood + ' mood' : 'contextual attributes'} for a ${weather.toLowerCase()} day. It has <strong>${song.valence.toFixed(2)} valence</strong> and <strong>${song.energy.toFixed(2)} energy</strong>. This shifts you outside your usual artist loop.
                         </div>
                     </div>
                 `;
@@ -2399,8 +2413,9 @@
             const isNonNative = document.getElementById('sandbox-nonnative').checked;
             const historyGroup = document.getElementById('history-lang-group');
             
-            // Show mood pop-up when expat override is turned ON
-            if (isNonNative && !lastNonNativeState) {
+            const useRealtime = document.getElementById('sandbox-realtime').checked;
+            // Show mood pop-up when expat override is turned ON only if location is off
+            if (!useRealtime && isNonNative && !lastNonNativeState) {
                 setTimeout(() => {
                     document.getElementById('mood-selector-overlay').classList.add('open');
                 }, 400);
