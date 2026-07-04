@@ -1364,6 +1364,11 @@
             transform: scale(1.03);
             background-color: #1ed760;
         }
+
+        .catalog-row:hover {
+            background-color: #282828 !important;
+            color: #ffffff !important;
+        }
     </style>
 </head>
 <body>
@@ -1530,6 +1535,34 @@
                                 <svg viewBox="0 0 24 24"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
                             </button>
                         </div>
+                </div>
+
+                <!-- Full Music Catalog (50+ Loop-Breaker Tracks) -->
+                <div style="margin-top: 32px;">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">AI Loop Breaker Music Catalog</h2>
+                            <p class="section-desc">Explore all 50+ regional Indian and global tracks used in contextual recommendations. Click play to listen.</p>
+                        </div>
+                    </div>
+                    <div class="catalog-table-container" style="background-color: #181818; padding: 20px; border-radius: 8px; margin-top: 16px; overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; color: #b3b3b3; font-size: 14px; min-width: 600px;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid #282828; color: #ffffff;">
+                                    <th style="padding: 12px 8px;">#</th>
+                                    <th style="padding: 12px 8px;">Title</th>
+                                    <th style="padding: 12px 8px;">Artist</th>
+                                    <th style="padding: 12px 8px;">Language</th>
+                                    <th style="padding: 12px 8px;">Genre</th>
+                                    <th style="padding: 12px 8px;">Era</th>
+                                    <th style="padding: 12px 8px; text-align: center;">Vibe (Valence/Energy)</th>
+                                    <th style="padding: 12px 8px; text-align: right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="catalog-table-body">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1743,15 +1776,21 @@
             {"id":"t3","name":"Rowdy Baby","artist":"Dhanush, Dhee","language":"Tamil","genre":"Pop","era":"Latest","valence":0.9,"energy":0.95,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S"},
             {"id":"t4","name":"Enjoy Enjaami","artist":"Dhee, Arivu","language":"Tamil","genre":"Folk","era":"Latest","valence":0.85,"energy":0.88,"spotifyId":"3LuV91W9oDkXqB2n2cK58w"},
             {"id":"t5","name":"Vaa Vaa","artist":"Anirudh Ravichander","language":"Tamil","genre":"Pop","era":"Latest","valence":0.82,"energy":0.85,"spotifyId":"7m9Odf223X3hWj35S6M521"},
+            {"id":"t6","name":"Arabic Kuthu","artist":"Anirudh Ravichander, Jonita Gandhi","language":"Tamil","genre":"Pop","era":"Latest","valence":0.88,"energy":0.92,"spotifyId":"arabic123"},
+            {"id":"t7","name":"Kadhale Kadhale","artist":"Govind Vasantha, Chinmayi","language":"Tamil","genre":"Melody","era":"Latest","valence":0.4,"energy":0.3,"spotifyId":"kadhale123"},
             {"id":"t11","name":"Roja Theme","artist":"A.R. Rahman","language":"Tamil","genre":"Melody","era":"Old","valence":0.7,"energy":0.4,"spotifyId":"1x3z3X8g2l14fS5B1D8l85"},
             {"id":"m1","name":"Lailakame","artist":"Vineeth Sreenivasan","language":"Malayalam","genre":"Pop","era":"Latest","valence":0.9,"energy":0.8,"spotifyId":"0VjIjW4GlUZAMYd2vXMiZz"},
             {"id":"m2","name":"Kannil Kannil","artist":"Haricharan, Shreya Ghoshal","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.8,"energy":0.65,"spotifyId":"4D4QDg8U6H3Z2g0V1z14m7"},
+            {"id":"m3","name":"Darshana","artist":"Hesham Abdul Wahab","language":"Malayalam","genre":"Pop","era":"Latest","valence":0.8,"energy":0.75,"spotifyId":"darshana123"},
+            {"id":"m4","name":"Malare","artist":"Vijay Yesudas","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.65,"energy":0.45,"spotifyId":"malare123"},
             {"id":"m6","name":"Mazhaye Mazhaye","artist":"Sid Sriram","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.55,"energy":0.45,"spotifyId":"7m9Odf223X3hWj35S6M521"},
             {"id":"m9","name":"Oru Koottil","artist":"MG Sreekumar","language":"Malayalam","genre":"Folk","era":"Old","valence":0.8,"energy":0.6,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l"},
             {"id":"m12","name":"Pramodavanam","artist":"Yesudas","language":"Malayalam","genre":"Melody","era":"Old","valence":0.5,"energy":0.4,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
             {"id":"h1","name":"Kesariya","artist":"Arijit Singh","language":"Hindi","genre":"Pop","era":"Latest","valence":0.75,"energy":0.7,"spotifyId":"6mP6111LwDqV4P3Dk8FhUo"},
             {"id":"h2","name":"Raataan Lambiyan","artist":"Jubin Nautiyal, Asees Kaur","language":"Hindi","genre":"Melody","era":"Latest","valence":0.7,"energy":0.55,"spotifyId":"145FwRz32Pz12K5GfVd2c6"},
+            {"id":"h3","name":"Chaleya","artist":"Arijit Singh, Shilpa Rao","language":"Hindi","genre":"Pop","era":"Latest","valence":0.85,"energy":0.8,"spotifyId":"chaleya123"},
             {"id":"h4","name":"Besharam Rang","artist":"Shilpa Rao, Caralisa Monteiro","language":"Hindi","genre":"Pop","era":"Latest","valence":0.9,"energy":0.88,"spotifyId":"0e0A2oXg573z3X8g2l14fS"},
+            {"id":"h5","name":"Kabira","artist":"Tochi Raina, Rekha Bhardwaj","language":"Hindi","genre":"Melody","era":"Latest","valence":0.7,"energy":0.5,"spotifyId":"kabira123"},
             {"id":"h7","name":"Apna Bana Le","artist":"Arijit Singh","language":"Hindi","genre":"Melody","era":"Latest","valence":0.6,"energy":0.5,"spotifyId":"6mP6111LwDqV4P3Dk8FhUo"},
             {"id":"h10","name":"Kal Ho Na Ho","artist":"Sonu Nigam","language":"Hindi","genre":"Melody","era":"Old","valence":0.65,"energy":0.5,"spotifyId":"7m9Odf223X3hWj35S6M521"},
             {"id":"h11","name":"Ek Ajnabee Haseena Se","artist":"Kishore Kumar","language":"Hindi","genre":"Pop","era":"Old","valence":0.85,"energy":0.7,"spotifyId":"3LuV91W9oDkXqB2n2cK58w"},
@@ -1763,6 +1802,8 @@
             {"id":"e11","name":"Someone Like You","artist":"Adele","language":"English","genre":"Melody","era":"Old","valence":0.29,"energy":0.36,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l"},
             {"id":"te1","name":"Samajavaragamana","artist":"Sid Sriram","language":"Telugu","genre":"Melody","era":"Latest","valence":0.65,"energy":0.5,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
             {"id":"te2","name":"Buttabomma","artist":"Armaan Malik","language":"Telugu","genre":"Melody","era":"Latest","valence":0.75,"energy":0.6,"spotifyId":"7215fW7aZ12Pz11K5GfVda"},
+            {"id":"te3","name":"Ramuloo Ramulaa","artist":"Anurag Kulkarni, Mangli","language":"Telugu","genre":"Pop","era":"Latest","valence":0.9,"energy":0.92,"spotifyId":"ramuloo123"},
+            {"id":"te4","name":"Ondra Ondra","artist":"Harris Jayaraj","language":"Telugu","genre":"Melody","era":"Old","valence":0.75,"energy":0.55,"spotifyId":"ondra123"},
             {"id":"te5","name":"Naatu Naatu","artist":"Rahul Sipligunj, Kaala Bhairava","language":"Telugu","genre":"Folk","era":"Latest","valence":0.95,"energy":0.97,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S"},
             {"id":"te8","name":"Roja Jaaneman","artist":"S.P. Balasubrahmanyam, Lata Mangeshkar","language":"Telugu","genre":"Melody","era":"Old","valence":0.8,"energy":0.45,"spotifyId":"6v5674FwRz32Pz11K5GfVda"},
             {"id":"j1","name":"Take Five","artist":"Dave Brubeck Quartet","language":"English","genre":"Jazz","era":"Old","valence":0.88,"energy":0.5,"spotifyId":"5a5674FwRz32Pz11K5GfVda"},
@@ -1773,12 +1814,18 @@
             {"id":"k3","name":"Tagaru Banthu Tagaru","artist":"Anthony Daasan","language":"Kannada","genre":"Pop","era":"Latest","valence":0.8,"energy":0.85,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
             {"id":"k4","name":"Nee Santhasa Dinda","artist":"S.P. Balasubrahmanyam","language":"Kannada","genre":"Melody","era":"Old","valence":0.7,"energy":0.5,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S"},
             {"id":"k5","name":"Kavithe Kavithe","artist":"Vijay Prakash","language":"Kannada","genre":"Melody","era":"Old","valence":0.6,"energy":0.4,"spotifyId":"7m9Odf223X3hWj35S6M521"},
+            {"id":"k6","name":"Belageddu","artist":"Vijay Prakash","language":"Kannada","genre":"Melody","era":"Latest","valence":0.8,"energy":0.68,"spotifyId":"belageddu123"},
+            {"id":"k7","name":"Saluthillave","artist":"Vijay Prakash, Shreya Ghoshal","language":"Kannada","genre":"Melody","era":"Latest","valence":0.65,"energy":0.5,"spotifyId":"saluthillave123"},
             {"id":"b1","name":"Boba Tunnel","artist":"Anupam Roy","language":"Bengali","genre":"Melody","era":"Latest","valence":0.5,"energy":0.4,"spotifyId":"boba123"},
             {"id":"b2","name":"Amake Amar Moto","artist":"Anupam Roy","language":"Bengali","genre":"Pop","era":"Latest","valence":0.7,"energy":0.6,"spotifyId":"amake123"},
             {"id":"b3","name":"Rangabati","artist":"Sona Mohapatra","language":"Bengali","genre":"Folk","era":"Latest","valence":0.85,"energy":0.88,"spotifyId":"ranga123"},
+            {"id":"b4","name":"Baishe Shrabon Theme","artist":"Anupam Roy","language":"Bengali","genre":"Melody","era":"Old","valence":0.3,"energy":0.3,"spotifyId":"baishe123"},
+            {"id":"b5","name":"Emi Jodi Chaho","artist":"Arijit Singh","language":"Bengali","genre":"Pop","era":"Latest","valence":0.75,"energy":0.7,"spotifyId":"emi123"},
             {"id":"g1","name":"Khalasi","artist":"Aditya Gadhvi","language":"Gujarati","genre":"Folk","era":"Latest","valence":0.9,"energy":0.92,"spotifyId":"khalasi123"},
             {"id":"g2","name":"Goti Goti","artist":"Aditya Gadhvi","language":"Gujarati","genre":"Pop","era":"Latest","valence":0.82,"energy":0.85,"spotifyId":"goti123"},
-            {"id":"g3","name":"Radha Ne Shyam","artist":"Sachin-Jigar","language":"Gujarati","genre":"Melody","era":"Latest","valence":0.6,"energy":0.45,"spotifyId":"radha123"}
+            {"id":"g3","name":"Radha Ne Shyam","artist":"Sachin-Jigar","language":"Gujarati","genre":"Melody","era":"Latest","valence":0.6,"energy":0.45,"spotifyId":"radha123"},
+            {"id":"g4","name":"Satrangi Re","artist":"Arijit Singh","language":"Gujarati","genre":"Melody","era":"Latest","valence":0.65,"energy":0.55,"spotifyId":"satrangi123"},
+            {"id":"g5","name":"Dholida","artist":"Jahnvi Shrimankar","language":"Gujarati","genre":"Folk","era":"Latest","valence":0.92,"energy":0.95,"spotifyId":"dholida123"}
         ];
 
         // --- 2. State Variables ---
@@ -1792,6 +1839,7 @@
         let globalAudio = null;
         
         let chatInitialized = false;
+        let lastNonNativeState = false;
 
         // --- 3. View Switcher ---
         function showView(viewId) {
@@ -2231,10 +2279,24 @@
             else if (mood === 'party') { targetValence = 0.9; targetEnergy = 0.95; }
 
             // Apply weather modifier
-            if (weather === 'Rainy') { targetValence -= 0.1; targetEnergy -= 0.1; }
-            else if (weather === 'Sunny') { targetValence += 0.1; targetEnergy += 0.15; }
-            else if (weather === 'Cold') { targetEnergy -= 0.05; }
-            else if (weather === 'Overcast') { targetValence -= 0.15; }
+            let weatherDescription = "";
+            if (weather === 'Rainy') { 
+                targetValence -= 0.15; 
+                targetEnergy -= 0.2; 
+                weatherDescription = "🌦️ Since the weather is Rainy, the AI is prioritizing slower, cozy acoustic melodies.";
+            } else if (weather === 'Sunny') { 
+                targetValence += 0.15; 
+                targetEnergy += 0.2; 
+                weatherDescription = "☀️ Since the weather is Sunny, the AI is prioritizing bright, high-energy pop and folk beats.";
+            } else if (weather === 'Cold') { 
+                targetValence -= 0.05; 
+                targetEnergy -= 0.15; 
+                weatherDescription = "❄️ Since the weather is Cold, the AI is prioritizing warm, atmospheric jazz and acoustic tunes.";
+            } else if (weather === 'Overcast') { 
+                targetValence -= 0.1; 
+                targetEnergy -= 0.05; 
+                weatherDescription = "☁️ Since the weather is Overcast, the AI is prioritizing smooth, melancholic and focused melodies.";
+            }
 
             // Ensure bounds
             targetValence = Math.max(0.1, Math.min(0.99, targetValence));
@@ -2266,7 +2328,7 @@
             // Take top 4 recommendations
             let recommendations = scoredSongs.slice(0, 4);
 
-            await appendBotMessage(`Successfully mapped targets:<br>🎯 <strong>Target Valence:</strong> ${targetValence.toFixed(2)}<br>⚡ <strong>Target Energy:</strong> ${targetEnergy.toFixed(2)}<br>🎶 <strong>Filtered Languages:</strong> ${targetLangs.join(" / ")}`, 1000, true);
+            await appendBotMessage(`Successfully mapped targets:<br>🎯 <strong>Target Valence:</strong> ${targetValence.toFixed(2)}<br>⚡ <strong>Target Energy:</strong> ${targetEnergy.toFixed(2)}<br>🎶 <strong>Filtered Languages:</strong> ${targetLangs.join(" / ")}<br><br>${weatherDescription}`, 1000, true);
             await appendBotMessage("Here are your loop-breaking songs selected specifically for this exact moment! Click 'Play' on any song to hear it:", 800);
 
             // Render Song Cards in Chat
@@ -2322,6 +2384,11 @@
             } else {
                 document.getElementById('sandbox-location').style.opacity = 1.0;
                 document.getElementById('sandbox-weather').style.opacity = 1.0;
+                
+                // Show mood pop-up when location is off
+                setTimeout(() => {
+                    document.getElementById('mood-selector-overlay').classList.add('open');
+                }, 400);
             }
 
             onDevSandboxChange();
@@ -2331,6 +2398,15 @@
         function onDevSandboxChange() {
             const isNonNative = document.getElementById('sandbox-nonnative').checked;
             const historyGroup = document.getElementById('history-lang-group');
+            
+            // Show mood pop-up when expat override is turned ON
+            if (isNonNative && !lastNonNativeState) {
+                setTimeout(() => {
+                    document.getElementById('mood-selector-overlay').classList.add('open');
+                }, 400);
+            }
+            lastNonNativeState = isNonNative;
+
             if (isNonNative) {
                 historyGroup.style.display = 'flex';
             } else {
@@ -2371,13 +2447,33 @@
                 globalAudio = null;
             }
 
-            // Real-time audio streams (royalty-free instrumental/background tracks)
+            // Look up song details in MUSIC_CATALOG
+            const song = MUSIC_CATALOG.find(s => s.name === name);
+            let energy = 0.5;
+            let playbackRate = 1.0;
+            if (song) {
+                energy = song.energy || 0.5;
+                playbackRate = 0.85 + (energy * 0.3); // maps [0, 1] to [0.85, 1.15]
+            }
+
+            // Real-time audio streams (16 distinct royalty-free tracks)
             const audioUrls = [
                 "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
                 "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
                 "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
                 "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3",
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3"
             ];
             
             // Map track based on song name string sum hash to ensure consistency
@@ -2390,6 +2486,13 @@
 
             // Initialize global audio element
             globalAudio = new Audio(selectedUrl);
+            
+            // Adjust playback speed dynamically to match valence/energy characteristics
+            globalAudio.addEventListener('canplay', () => {
+                if (globalAudio) {
+                    globalAudio.playbackRate = playbackRate;
+                }
+            });
             
             // Listeners to sync with real progress
             globalAudio.addEventListener('loadedmetadata', () => {
@@ -2464,8 +2567,56 @@
             document.getElementById('progress-current').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
+        function renderCatalogTable() {
+            const body = document.getElementById('catalog-table-body');
+            body.innerHTML = '';
+            
+            MUSIC_CATALOG.forEach((song, idx) => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #282828';
+                tr.style.transition = 'background 0.2s';
+                tr.className = 'catalog-row';
+                
+                tr.innerHTML = `
+                    <td style="padding: 12px 8px;">${idx + 1}</td>
+                    <td style="padding: 12px 8px; font-weight: bold; color: #ffffff;">${song.name}</td>
+                    <td style="padding: 12px 8px;">${song.artist}</td>
+                    <td style="padding: 12px 8px;"><span style="background-color: #282828; padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #1db954;">${song.language}</span></td>
+                    <td style="padding: 12px 8px;">${song.genre}</td>
+                    <td style="padding: 12px 8px;">${song.era}</td>
+                    <td style="padding: 12px 8px; text-align: center;">😊 ${song.valence.toFixed(2)} / ⚡ ${song.energy.toFixed(2)}</td>
+                    <td style="padding: 12px 8px; text-align: right;">
+                        <button onclick="playCatalogSong('${song.id}')" style="background-color: #1db954; color: #000000; border: none; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s;">
+                            <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #000000;"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+                        </button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        function playCatalogSong(songId) {
+            const song = MUSIC_CATALOG.find(s => s.id === songId);
+            if (!song) return;
+            const colors = {
+                'Tamil': '#e91e63',
+                'Malayalam': '#9c27b0',
+                'Hindi': '#ff5722',
+                'Telugu': '#ffeb3b',
+                'Kannada': '#4caf50',
+                'Bengali': '#00bcd4',
+                'Gujarati': '#ff9800',
+                'English': '#3f51b5'
+            };
+            const color = colors[song.language] || '#1db954';
+            playSong(song.name, song.artist, color);
+        }
+
         // Show onboarding popup and run auto-detection on page load
         window.addEventListener('DOMContentLoaded', async () => {
+            // Render catalog table
+            renderCatalogTable();
+
             // Run location request or prompt browser GPS
             try {
                 const realData = await detectRealLocationAndWeather();
