@@ -1839,6 +1839,7 @@
         let globalAudio = null;
         let ytPlayer = null;
         let ytApiLoaded = false;
+        let currentTrackSimulated = false;
         
         let chatInitialized = false;
         let lastNonNativeState = false;
@@ -2363,7 +2364,7 @@
                                     <span style="font-size:10px; color:#1db954; font-weight:700; margin-top:2px;">[Language: ${song.language}]</span>
                                 </div>
                             </div>
-                            <button class="song-play-mini" onclick="playSong('${song.name.replace(/'/g, "\\'")}', '${song.artist.replace(/'/g, "\\'")}', '${cardColor}', '${song.spotifyId}')">
+                            <button class="song-play-mini" onclick="playSong('${song.name.replace(/'/g, "\\'")}', '${song.artist.replace(/'/g, "\\'")}', '${cardColor}', true)">
                                 <svg viewBox="0 0 24 24"><path d="M7.05 3.606l13.49 7.79a.7.7 0 0 1 0 1.212L7.05 20.398a.7.7 0 0 1-1.05-.606V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
                             </button>
                         </div>
@@ -2520,7 +2521,7 @@
             }
         }
 
-        function playSong(name, artist, colorCode) {
+        function playSong(name, artist, colorCode, forceSimulation = false) {
             isPlaying = true;
             currentTrackName = name;
             currentTrackArtist = artist;
@@ -2547,12 +2548,19 @@
 
             // Find song details from catalog to extract the youtubeId
             const song = MUSIC_CATALOG.find(s => s.name === name);
-            if (song && song.youtubeId && ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+            if (!forceSimulation && song && song.youtubeId && ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+                currentTrackSimulated = false;
                 ytPlayer.loadVideoById(song.youtubeId);
             } else {
-                console.warn("YouTube player not ready or video ID missing. Simulating instead.");
+                currentTrackSimulated = true;
+                console.warn("Playing visual simulation.");
                 
-                // Fallback simulation if YouTube ID is not ready
+                // Stop YouTube audio if it is playing
+                if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+                    try { ytPlayer.stopVideo(); } catch(e){}
+                }
+
+                // Fallback simulation if YouTube ID is not ready or forceSimulation is true
                 totalPlaySeconds = 180;
                 let charSum = 0;
                 for (let i = 0; i < name.length; i++) {
@@ -2588,8 +2596,7 @@
             if (currentTrackName === "") return;
             
             // Check if playing via YouTube player
-            const song = MUSIC_CATALOG.find(s => s.name === currentTrackName);
-            if (song && song.youtubeId && ytPlayer && typeof ytPlayer.playVideo === 'function') {
+            if (!currentTrackSimulated && ytPlayer && typeof ytPlayer.playVideo === 'function') {
                 if (isPlaying) {
                     ytPlayer.pauseVideo();
                 } else {
@@ -2631,8 +2638,7 @@
             const width = rect.width;
             const percentage = clickX / width;
             
-            const song = MUSIC_CATALOG.find(s => s.name === currentTrackName);
-            if (song && song.youtubeId && ytPlayer && typeof ytPlayer.seekTo === 'function' && typeof ytPlayer.getDuration === 'function') {
+            if (!currentTrackSimulated && ytPlayer && typeof ytPlayer.seekTo === 'function' && typeof ytPlayer.getDuration === 'function') {
                 const duration = ytPlayer.getDuration();
                 if (duration > 0) {
                     ytPlayer.seekTo(percentage * duration, true);
