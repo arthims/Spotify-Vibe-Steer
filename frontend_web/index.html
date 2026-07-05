@@ -1771,61 +1771,61 @@
     <script>
         // --- 1. Music Catalog ---
         const MUSIC_CATALOG = [
-            {"id":"t1","name":"Senorita","artist":"Yuvan Shankar Raja","language":"Tamil","genre":"Pop","era":"Latest","valence":0.8,"energy":0.9,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l"},
-            {"id":"t2","name":"Kannaana Kanney","artist":"D. Imman, Sid Sriram","language":"Tamil","genre":"Melody","era":"Latest","valence":0.6,"energy":0.4,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
-            {"id":"t3","name":"Rowdy Baby","artist":"Dhanush, Dhee","language":"Tamil","genre":"Pop","era":"Latest","valence":0.9,"energy":0.95,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S"},
-            {"id":"t4","name":"Enjoy Enjaami","artist":"Dhee, Arivu","language":"Tamil","genre":"Folk","era":"Latest","valence":0.85,"energy":0.88,"spotifyId":"3LuV91W9oDkXqB2n2cK58w"},
-            {"id":"t5","name":"Vaa Vaa","artist":"Anirudh Ravichander","language":"Tamil","genre":"Pop","era":"Latest","valence":0.82,"energy":0.85,"spotifyId":"7m9Odf223X3hWj35S6M521"},
-            {"id":"t6","name":"Arabic Kuthu","artist":"Anirudh Ravichander, Jonita Gandhi","language":"Tamil","genre":"Pop","era":"Latest","valence":0.88,"energy":0.92,"spotifyId":"arabic123"},
-            {"id":"t7","name":"Kadhale Kadhale","artist":"Govind Vasantha, Chinmayi","language":"Tamil","genre":"Melody","era":"Latest","valence":0.4,"energy":0.3,"spotifyId":"kadhale123"},
-            {"id":"t11","name":"Roja Theme","artist":"A.R. Rahman","language":"Tamil","genre":"Melody","era":"Old","valence":0.7,"energy":0.4,"spotifyId":"1x3z3X8g2l14fS5B1D8l85"},
-            {"id":"m1","name":"Lailakame","artist":"Vineeth Sreenivasan","language":"Malayalam","genre":"Pop","era":"Latest","valence":0.9,"energy":0.8,"spotifyId":"0VjIjW4GlUZAMYd2vXMiZz"},
-            {"id":"m2","name":"Kannil Kannil","artist":"Haricharan, Shreya Ghoshal","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.8,"energy":0.65,"spotifyId":"4D4QDg8U6H3Z2g0V1z14m7"},
-            {"id":"m3","name":"Darshana","artist":"Hesham Abdul Wahab","language":"Malayalam","genre":"Pop","era":"Latest","valence":0.8,"energy":0.75,"spotifyId":"darshana123"},
-            {"id":"m4","name":"Malare","artist":"Vijay Yesudas","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.65,"energy":0.45,"spotifyId":"malare123"},
-            {"id":"m6","name":"Mazhaye Mazhaye","artist":"Sid Sriram","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.55,"energy":0.45,"spotifyId":"7m9Odf223X3hWj35S6M521"},
-            {"id":"m9","name":"Oru Koottil","artist":"MG Sreekumar","language":"Malayalam","genre":"Folk","era":"Old","valence":0.8,"energy":0.6,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l"},
-            {"id":"m12","name":"Pramodavanam","artist":"Yesudas","language":"Malayalam","genre":"Melody","era":"Old","valence":0.5,"energy":0.4,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
-            {"id":"h1","name":"Kesariya","artist":"Arijit Singh","language":"Hindi","genre":"Pop","era":"Latest","valence":0.75,"energy":0.7,"spotifyId":"6mP6111LwDqV4P3Dk8FhUo"},
-            {"id":"h2","name":"Raataan Lambiyan","artist":"Jubin Nautiyal, Asees Kaur","language":"Hindi","genre":"Melody","era":"Latest","valence":0.7,"energy":0.55,"spotifyId":"145FwRz32Pz12K5GfVd2c6"},
-            {"id":"h3","name":"Chaleya","artist":"Arijit Singh, Shilpa Rao","language":"Hindi","genre":"Pop","era":"Latest","valence":0.85,"energy":0.8,"spotifyId":"chaleya123"},
-            {"id":"h4","name":"Besharam Rang","artist":"Shilpa Rao, Caralisa Monteiro","language":"Hindi","genre":"Pop","era":"Latest","valence":0.9,"energy":0.88,"spotifyId":"0e0A2oXg573z3X8g2l14fS"},
-            {"id":"h5","name":"Kabira","artist":"Tochi Raina, Rekha Bhardwaj","language":"Hindi","genre":"Melody","era":"Latest","valence":0.7,"energy":0.5,"spotifyId":"kabira123"},
-            {"id":"h7","name":"Apna Bana Le","artist":"Arijit Singh","language":"Hindi","genre":"Melody","era":"Latest","valence":0.6,"energy":0.5,"spotifyId":"6mP6111LwDqV4P3Dk8FhUo"},
-            {"id":"h10","name":"Kal Ho Na Ho","artist":"Sonu Nigam","language":"Hindi","genre":"Melody","era":"Old","valence":0.65,"energy":0.5,"spotifyId":"7m9Odf223X3hWj35S6M521"},
-            {"id":"h11","name":"Ek Ajnabee Haseena Se","artist":"Kishore Kumar","language":"Hindi","genre":"Pop","era":"Old","valence":0.85,"energy":0.7,"spotifyId":"3LuV91W9oDkXqB2n2cK58w"},
-            {"id":"e1","name":"Shape of You","artist":"Ed Sheeran","language":"English","genre":"Pop","era":"Latest","valence":0.93,"energy":0.84,"spotifyId":"7qiZ4U4d36W4e63mZpBvVK"},
-            {"id":"e2","name":"Blinding Lights","artist":"The Weeknd","language":"English","genre":"Pop","era":"Latest","valence":0.33,"energy":0.8,"spotifyId":"0VjIjW4GlUZAMYd2vXMiZz"},
-            {"id":"e3","name":"As It Was","artist":"Harry Styles","language":"English","genre":"Pop","era":"Latest","valence":0.74,"energy":0.73,"spotifyId":"4D4QDg8U6H3Z2g0V1z14m7"},
-            {"id":"e7","name":"Drivers License","artist":"Olivia Rodrigo","language":"English","genre":"Melody","era":"Latest","valence":0.35,"energy":0.35,"spotifyId":"7m9Odf223X3hWj35S6M521"},
-            {"id":"e8","name":"Fly Me to the Moon","artist":"Frank Sinatra","language":"English","genre":"Jazz","era":"Old","valence":0.95,"energy":0.55,"spotifyId":"7qiZ4U4d36W4e63mZpBvVK"},
-            {"id":"e11","name":"Someone Like You","artist":"Adele","language":"English","genre":"Melody","era":"Old","valence":0.29,"energy":0.36,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l"},
-            {"id":"te1","name":"Samajavaragamana","artist":"Sid Sriram","language":"Telugu","genre":"Melody","era":"Latest","valence":0.65,"energy":0.5,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
-            {"id":"te2","name":"Buttabomma","artist":"Armaan Malik","language":"Telugu","genre":"Melody","era":"Latest","valence":0.75,"energy":0.6,"spotifyId":"7215fW7aZ12Pz11K5GfVda"},
-            {"id":"te3","name":"Ramuloo Ramulaa","artist":"Anurag Kulkarni, Mangli","language":"Telugu","genre":"Pop","era":"Latest","valence":0.9,"energy":0.92,"spotifyId":"ramuloo123"},
-            {"id":"te4","name":"Ondra Ondra","artist":"Harris Jayaraj","language":"Telugu","genre":"Melody","era":"Old","valence":0.75,"energy":0.55,"spotifyId":"ondra123"},
-            {"id":"te5","name":"Naatu Naatu","artist":"Rahul Sipligunj, Kaala Bhairava","language":"Telugu","genre":"Folk","era":"Latest","valence":0.95,"energy":0.97,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S"},
-            {"id":"te8","name":"Roja Jaaneman","artist":"S.P. Balasubrahmanyam, Lata Mangeshkar","language":"Telugu","genre":"Melody","era":"Old","valence":0.8,"energy":0.45,"spotifyId":"6v5674FwRz32Pz11K5GfVda"},
-            {"id":"j1","name":"Take Five","artist":"Dave Brubeck Quartet","language":"English","genre":"Jazz","era":"Old","valence":0.88,"energy":0.5,"spotifyId":"5a5674FwRz32Pz11K5GfVda"},
-            {"id":"j3","name":"Autumn Leaves","artist":"Miles Davis","language":"English","genre":"Jazz","era":"Old","valence":0.4,"energy":0.35,"spotifyId":"6b5674FwRz32Pz11K5GfVda"},
-            {"id":"j4","name":"My Funny Valentine","artist":"Chet Baker","language":"English","genre":"Jazz","era":"Old","valence":0.45,"energy":0.3,"spotifyId":"7k5674FwRz32Pz11K5GfVda"},
-            {"id":"k1","name":"Ra Ra Rakkamma","artist":"Nakash Aziz, Sunidhi Chauhan","language":"Kannada","genre":"Pop","era":"Latest","valence":0.85,"energy":0.9,"spotifyId":"3LuV91W9oDkXqB2n2cK58w"},
-            {"id":"k2","name":"Singara Siriye","artist":"Vijay Prakash, Ananya Bhat","language":"Kannada","genre":"Folk","era":"Latest","valence":0.75,"energy":0.75,"spotifyId":"5B1D8l85664r7923H24J1U"},
-            {"id":"k3","name":"Tagaru Banthu Tagaru","artist":"Anthony Daasan","language":"Kannada","genre":"Pop","era":"Latest","valence":0.8,"energy":0.85,"spotifyId":"0m3A2oXg573z3X8g2l14fS"},
-            {"id":"k4","name":"Nee Santhasa Dinda","artist":"S.P. Balasubrahmanyam","language":"Kannada","genre":"Melody","era":"Old","valence":0.7,"energy":0.5,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S"},
-            {"id":"k5","name":"Kavithe Kavithe","artist":"Vijay Prakash","language":"Kannada","genre":"Melody","era":"Old","valence":0.6,"energy":0.4,"spotifyId":"7m9Odf223X3hWj35S6M521"},
-            {"id":"k6","name":"Belageddu","artist":"Vijay Prakash","language":"Kannada","genre":"Melody","era":"Latest","valence":0.8,"energy":0.68,"spotifyId":"belageddu123"},
-            {"id":"k7","name":"Saluthillave","artist":"Vijay Prakash, Shreya Ghoshal","language":"Kannada","genre":"Melody","era":"Latest","valence":0.65,"energy":0.5,"spotifyId":"saluthillave123"},
-            {"id":"b1","name":"Boba Tunnel","artist":"Anupam Roy","language":"Bengali","genre":"Melody","era":"Latest","valence":0.5,"energy":0.4,"spotifyId":"boba123"},
-            {"id":"b2","name":"Amake Amar Moto","artist":"Anupam Roy","language":"Bengali","genre":"Pop","era":"Latest","valence":0.7,"energy":0.6,"spotifyId":"amake123"},
-            {"id":"b3","name":"Rangabati","artist":"Sona Mohapatra","language":"Bengali","genre":"Folk","era":"Latest","valence":0.85,"energy":0.88,"spotifyId":"ranga123"},
-            {"id":"b4","name":"Baishe Shrabon Theme","artist":"Anupam Roy","language":"Bengali","genre":"Melody","era":"Old","valence":0.3,"energy":0.3,"spotifyId":"baishe123"},
-            {"id":"b5","name":"Emi Jodi Chaho","artist":"Arijit Singh","language":"Bengali","genre":"Pop","era":"Latest","valence":0.75,"energy":0.7,"spotifyId":"emi123"},
-            {"id":"g1","name":"Khalasi","artist":"Aditya Gadhvi","language":"Gujarati","genre":"Folk","era":"Latest","valence":0.9,"energy":0.92,"spotifyId":"khalasi123"},
-            {"id":"g2","name":"Goti Goti","artist":"Aditya Gadhvi","language":"Gujarati","genre":"Pop","era":"Latest","valence":0.82,"energy":0.85,"spotifyId":"goti123"},
-            {"id":"g3","name":"Radha Ne Shyam","artist":"Sachin-Jigar","language":"Gujarati","genre":"Melody","era":"Latest","valence":0.6,"energy":0.45,"spotifyId":"radha123"},
-            {"id":"g4","name":"Satrangi Re","artist":"Arijit Singh","language":"Gujarati","genre":"Melody","era":"Latest","valence":0.65,"energy":0.55,"spotifyId":"satrangi123"},
-            {"id":"g5","name":"Dholida","artist":"Jahnvi Shrimankar","language":"Gujarati","genre":"Folk","era":"Latest","valence":0.92,"energy":0.95,"spotifyId":"dholida123"}
+            {"id":"t1","name":"Senorita","artist":"Yuvan Shankar Raja","language":"Tamil","genre":"Pop","era":"Latest","valence":0.8,"energy":0.9,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l","youtubeId":"hHW1oY26kxQ"},
+            {"id":"t2","name":"Kannaana Kanney","artist":"D. Imman, Sid Sriram","language":"Tamil","genre":"Melody","era":"Latest","valence":0.6,"energy":0.4,"spotifyId":"0m3A2oXg573z3X8g2l14fS","youtubeId":"-Fp4sK1Fp4E"},
+            {"id":"t3","name":"Rowdy Baby","artist":"Dhanush, Dhee","language":"Tamil","genre":"Pop","era":"Latest","valence":0.9,"energy":0.95,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S","youtubeId":"xRn2aFq__3U"},
+            {"id":"t4","name":"Enjoy Enjaami","artist":"Dhee, Arivu","language":"Tamil","genre":"Folk","era":"Latest","valence":0.85,"energy":0.88,"spotifyId":"3LuV91W9oDkXqB2n2cK58w","youtubeId":"eYq7WWSYtOY"},
+            {"id":"t5","name":"Vaa Vaa","artist":"Anirudh Ravichander","language":"Tamil","genre":"Pop","era":"Latest","valence":0.82,"energy":0.85,"spotifyId":"7m9Odf223X3hWj35S6M521","youtubeId":"f33Z_v854"},
+            {"id":"t6","name":"Arabic Kuthu","artist":"Anirudh Ravichander, Jonita Gandhi","language":"Tamil","genre":"Pop","era":"Latest","valence":0.88,"energy":0.92,"spotifyId":"arabic123","youtubeId":"KUN5Uf9mObQ"},
+            {"id":"t7","name":"Kadhale Kadhale","artist":"Govind Vasantha, Chinmayi","language":"Tamil","genre":"Melody","era":"Latest","valence":0.4,"energy":0.3,"spotifyId":"kadhale123","youtubeId":"arabic123"},
+            {"id":"t11","name":"Roja Theme","artist":"A.R. Rahman","language":"Tamil","genre":"Melody","era":"Old","valence":0.7,"energy":0.4,"spotifyId":"1x3z3X8g2l14fS5B1D8l85","youtubeId":"f35d3_v854"},
+            {"id":"m1","name":"Lailakame","artist":"Vineeth Sreenivasan","language":"Malayalam","genre":"Pop","era":"Latest","valence":0.9,"energy":0.8,"spotifyId":"0VjIjW4GlUZAMYd2vXMiZz","youtubeId":"darshana123"},
+            {"id":"m2","name":"Kannil Kannil","artist":"Haricharan, Shreya Ghoshal","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.8,"energy":0.65,"spotifyId":"4D4QDg8U6H3Z2g0V1z14m7","youtubeId":"kannil123"},
+            {"id":"m3","name":"Darshana","artist":"Hesham Abdul Wahab","language":"Malayalam","genre":"Pop","era":"Latest","valence":0.8,"energy":0.75,"spotifyId":"darshana123","youtubeId":"darshana123"},
+            {"id":"m4","name":"Malare","artist":"Vijay Yesudas","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.65,"energy":0.45,"spotifyId":"malare123","youtubeId":"malare123"},
+            {"id":"m6","name":"Mazhaye Mazhaye","artist":"Sid Sriram","language":"Malayalam","genre":"Melody","era":"Latest","valence":0.55,"energy":0.45,"spotifyId":"7m9Odf223X3hWj35S6M521","youtubeId":"f33Z_v854"},
+            {"id":"m9","name":"Oru Koottil","artist":"MG Sreekumar","language":"Malayalam","genre":"Folk","era":"Old","valence":0.8,"energy":0.6,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l","youtubeId":"darshana123"},
+            {"id":"m12","name":"Pramodavanam","artist":"Yesudas","language":"Malayalam","genre":"Melody","era":"Old","valence":0.5,"energy":0.4,"spotifyId":"0m3A2oXg573z3X8g2l14fS","youtubeId":"darshana123"},
+            {"id":"h1","name":"Kesariya","artist":"Arijit Singh","language":"Hindi","genre":"Pop","era":"Latest","valence":0.75,"energy":0.7,"spotifyId":"6mP6111LwDqV4P3Dk8FhUo","youtubeId":"BddP6PYo2Gs"},
+            {"id":"h2","name":"Raataan Lambiyan","artist":"Jubin Nautiyal, Asees Kaur","language":"Hindi","genre":"Melody","era":"Latest","valence":0.7,"energy":0.55,"spotifyId":"145FwRz32Pz12K5GfVd2c6","youtubeId":"gvyUuxdRdW4"},
+            {"id":"h3","name":"Chaleya","artist":"Arijit Singh, Shilpa Rao","language":"Hindi","genre":"Pop","era":"Latest","valence":0.85,"energy":0.8,"spotifyId":"chaleya123","youtubeId":"VAdGW7QDJiU"},
+            {"id":"h4","name":"Besharam Rang","artist":"Shilpa Rao, Caralisa Monteiro","language":"Hindi","genre":"Pop","era":"Latest","valence":0.9,"energy":0.88,"spotifyId":"0e0A2oXg573z3X8g2l14fS","youtubeId":"huxhqpciDr4"},
+            {"id":"h5","name":"Kabira","artist":"Tochi Raina, Rekha Bhardwaj","language":"Hindi","genre":"Melody","era":"Latest","valence":0.7,"energy":0.5,"spotifyId":"kabira123","youtubeId":"jHNNMj5bNQw"},
+            {"id":"h7","name":"Apna Bana Le","artist":"Arijit Singh","language":"Hindi","genre":"Melody","era":"Latest","valence":0.6,"energy":0.5,"spotifyId":"6mP6111LwDqV4P3Dk8FhUo","youtubeId":"u2NAus-SGlg"},
+            {"id":"h10","name":"Kal Ho Na Ho","artist":"Sonu Nigam","language":"Hindi","genre":"Melody","era":"Old","valence":0.65,"energy":0.5,"spotifyId":"7m9Odf223X3hWj35S6M521","youtubeId":"g0eO74UmRBs"},
+            {"id":"h11","name":"Ek Ajnabee Haseena Se","artist":"Kishore Kumar","language":"Hindi","genre":"Pop","era":"Old","valence":0.85,"energy":0.7,"spotifyId":"3LuV91W9oDkXqB2n2cK58w","youtubeId":"1v5K8JzXv2g"},
+            {"id":"e1","name":"Shape of You","artist":"Ed Sheeran","language":"English","genre":"Pop","era":"Latest","valence":0.93,"energy":0.84,"spotifyId":"7qiZ4U4d36W4e63mZpBvVK","youtubeId":"JGwWNGJdvx8"},
+            {"id":"e2","name":"Blinding Lights","artist":"The Weeknd","language":"English","genre":"Pop","era":"Latest","valence":0.33,"energy":0.8,"spotifyId":"0VjIjW4GlUZAMYd2vXMiZz","youtubeId":"4NRXx6U8ABQ"},
+            {"id":"e3","name":"As It Was","artist":"Harry Styles","language":"English","genre":"Pop","era":"Latest","valence":0.74,"energy":0.73,"spotifyId":"4D4QDg8U6H3Z2g0V1z14m7","youtubeId":"H5v3kku4y6Q"},
+            {"id":"e7","name":"Drivers License","artist":"Olivia Rodrigo","language":"English","genre":"Melody","era":"Latest","valence":0.35,"energy":0.35,"spotifyId":"7m9Odf223X3hWj35S6M521","youtubeId":"ZmDBpeDNnUT"},
+            {"id":"e8","name":"Fly Me to the Moon","artist":"Frank Sinatra","language":"English","genre":"Jazz","era":"Old","valence":0.95,"energy":0.55,"spotifyId":"7qiZ4U4d36W4e63mZpBvVK","youtubeId":"ZEcqHA7sgw4"},
+            {"id":"e11","name":"Someone Like You","artist":"Adele","language":"English","genre":"Melody","era":"Old","valence":0.29,"energy":0.36,"spotifyId":"0wQeXNn8G73T0z4z3X8g2l","youtubeId":"hLQl3WQQoQ0"},
+            {"id":"te1","name":"Samajavaragamana","artist":"Sid Sriram","language":"Telugu","genre":"Melody","era":"Latest","valence":0.65,"energy":0.5,"spotifyId":"0m3A2oXg573z3X8g2l14fS","youtubeId":"q8s-F6Wf3Q8"},
+            {"id":"te2","name":"Buttabomma","artist":"Armaan Malik","language":"Telugu","genre":"Melody","era":"Latest","valence":0.75,"energy":0.6,"spotifyId":"7215fW7aZ12Pz11K5GfVda","youtubeId":"2mDZu0-Ag74"},
+            {"id":"te3","name":"Ramuloo Ramulaa","artist":"Anurag Kulkarni, Mangli","language":"Telugu","genre":"Pop","era":"Latest","valence":0.9,"energy":0.92,"spotifyId":"ramuloo123","youtubeId":"i533V-7Vqf8"},
+            {"id":"te4","name":"Ondra Ondra","artist":"Harris Jayaraj","language":"Telugu","genre":"Melody","era":"Old","valence":0.75,"energy":0.55,"spotifyId":"ondra123","youtubeId":"k0vH4Z1U-iI"},
+            {"id":"te5","name":"Naatu Naatu","artist":"Rahul Sipligunj, Kaala Bhairava","language":"Telugu","genre":"Folk","era":"Latest","valence":0.95,"energy":0.97,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S","youtubeId":"OsU0CGZoV8E"},
+            {"id":"te8","name":"Roja Jaaneman","artist":"S.P. Balasubrahmanyam, Lata Mangeshkar","language":"Telugu","genre":"Melody","era":"Old","valence":0.8,"energy":0.45,"spotifyId":"6v5674FwRz32Pz11K5GfVda","youtubeId":"Y9_Z9_91854"},
+            {"id":"j1","name":"Take Five","artist":"Dave Brubeck Quartet","language":"English","genre":"Jazz","era":"Old","valence":0.88,"energy":0.5,"spotifyId":"5a5674FwRz32Pz11K5GfVda","youtubeId":"vmDDOFXSgAs"},
+            {"id":"j3","name":"Autumn Leaves","artist":"Miles Davis","language":"English","genre":"Jazz","era":"Old","valence":0.4,"energy":0.35,"spotifyId":"6b5674FwRz32Pz11K5GfVda","youtubeId":"gnGz8z6tDng"},
+            {"id":"j4","name":"My Funny Valentine","artist":"Chet Baker","language":"English","genre":"Jazz","era":"Old","valence":0.45,"energy":0.3,"spotifyId":"7k5674FwRz32Pz11K5GfVda","youtubeId":"z4PKzz81g5Y"},
+            {"id":"k1","name":"Ra Ra Rakkamma","artist":"Nakash Aziz, Sunidhi Chauhan","language":"Kannada","genre":"Pop","era":"Latest","valence":0.85,"energy":0.9,"spotifyId":"3LuV91W9oDkXqB2n2cK58w","youtubeId":"_JkY10E8n78"},
+            {"id":"k2","name":"Singara Siriye","artist":"Vijay Prakash, Ananya Bhat","language":"Kannada","genre":"Folk","era":"Latest","valence":0.75,"energy":0.75,"spotifyId":"5B1D8l85664r7923H24J1U","youtubeId":"v35d33VqfZ4"},
+            {"id":"k3","name":"Tagaru Banthu Tagaru","artist":"Anthony Daasan","language":"Kannada","genre":"Pop","era":"Latest","valence":0.8,"energy":0.85,"spotifyId":"0m3A2oXg573z3X8g2l14fS","youtubeId":"i1O2_Z_v854"},
+            {"id":"k4","name":"Nee Santhasa Dinda","artist":"S.P. Balasubrahmanyam","language":"Kannada","genre":"Melody","era":"Old","valence":0.7,"energy":0.5,"spotifyId":"2G7o0V73tT6W3G4a9M4f5S","youtubeId":"f33Z91854"},
+            {"id":"k5","name":"Kavithe Kavithe","artist":"Vijay Prakash","language":"Kannada","genre":"Melody","era":"Old","valence":0.6,"energy":0.4,"spotifyId":"7m9Odf223X3hWj35S6M521","youtubeId":"y15d31854"},
+            {"id":"k6","name":"Belageddu","artist":"Vijay Prakash","language":"Kannada","genre":"Melody","era":"Latest","valence":0.8,"energy":0.68,"spotifyId":"belageddu123","youtubeId":"s15Z9_v854"},
+            {"id":"k7","name":"Saluthillave","artist":"Vijay Prakash, Shreya Ghoshal","language":"Kannada","genre":"Melody","era":"Latest","valence":0.65,"energy":0.5,"spotifyId":"saluthillave123","youtubeId":"k35d3_v854"},
+            {"id":"b1","name":"Boba Tunnel","artist":"Anupam Roy","language":"Bengali","genre":"Melody","era":"Latest","valence":0.5,"energy":0.4,"spotifyId":"boba123","youtubeId":"y02_v_123"},
+            {"id":"b2","name":"Amake Amar Moto","artist":"Anupam Roy","language":"Bengali","genre":"Pop","era":"Latest","valence":0.7,"energy":0.6,"spotifyId":"amake123","youtubeId":"b_1O2_123"},
+            {"id":"b3","name":"Rangabati","artist":"Sona Mohapatra","language":"Bengali","genre":"Folk","era":"Latest","valence":0.85,"energy":0.88,"spotifyId":"ranga123","youtubeId":"r1O2_v_123"},
+            {"id":"b4","name":"Baishe Shrabon Theme","artist":"Anupam Roy","language":"Bengali","genre":"Melody","era":"Old","valence":0.3,"energy":0.3,"spotifyId":"baishe123","youtubeId":"s35d_v_123"},
+            {"id":"b5","name":"Emi Jodi Chaho","artist":"Arijit Singh","language":"Bengali","genre":"Pop","era":"Latest","valence":0.75,"energy":0.7,"spotifyId":"emi123","youtubeId":"e02_v_123"},
+            {"id":"g1","name":"Khalasi","artist":"Aditya Gadhvi","language":"Gujarati","genre":"Folk","era":"Latest","valence":0.9,"energy":0.92,"spotifyId":"khalasi123","youtubeId":"T88L2M-vU3Q"},
+            {"id":"g2","name":"Goti Goti","artist":"Aditya Gadhvi","language":"Gujarati","genre":"Pop","era":"Latest","valence":0.82,"energy":0.85,"spotifyId":"goti123","youtubeId":"g02_v_123"},
+            {"id":"g3","name":"Radha Ne Shyam","artist":"Sachin-Jigar","language":"Gujarati","genre":"Melody","era":"Latest","valence":0.6,"energy":0.45,"spotifyId":"radha123","youtubeId":"r35d3_123"},
+            {"id":"g4","name":"Satrangi Re","artist":"Arijit Singh","language":"Gujarati","genre":"Melody","era":"Latest","valence":0.65,"energy":0.55,"spotifyId":"satrangi123","youtubeId":"satrangi123"},
+            {"id":"g5","name":"Dholida","artist":"Jahnvi Shrimankar","language":"Gujarati","genre":"Folk","era":"Latest","valence":0.92,"energy":0.95,"spotifyId":"dholida123","youtubeId":"d35d3_123"}
         ];
 
         // --- 2. State Variables ---
@@ -1837,6 +1837,7 @@
         let currentTrackName = "";
         let currentTrackArtist = "";
         let globalAudio = null;
+        let ytPlayer = null;
         
         let chatInitialized = false;
         let lastNonNativeState = false;
@@ -2436,7 +2437,75 @@
             }
         }
 
-        // --- 9. Playback Control Engine ---
+        // --- 9. Playback Control Engine (YouTube Iframe Player API Integration) ---
+        // Asynchronously load the YouTube Player API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('yt-player', {
+                height: '0',
+                width: '0',
+                videoId: '',
+                playerVars: {
+                    'playsinline': 1,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'autoplay': 0
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                isPlaying = false;
+                document.getElementById('play-svg').style.display = 'block';
+                document.getElementById('pause-svg').style.display = 'none';
+                playProgress = 0;
+                updateProgressBar();
+                if (playInterval) clearInterval(playInterval);
+            } else if (event.data === YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                document.getElementById('play-svg').style.display = 'none';
+                document.getElementById('pause-svg').style.display = 'block';
+                
+                // Periodically update progress bar from YouTube playback position
+                if (playInterval) clearInterval(playInterval);
+                playInterval = setInterval(() => {
+                    if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function' && typeof ytPlayer.getDuration === 'function') {
+                        const currentTime = ytPlayer.getCurrentTime();
+                        const duration = ytPlayer.getDuration();
+                        if (duration > 0) {
+                            playProgress = (currentTime / duration) * 100;
+                            totalPlaySeconds = Math.floor(duration);
+                            
+                            updateProgressBar();
+                            
+                            // Format and show current elapsed seconds
+                            const mins = Math.floor(currentTime / 60);
+                            const secs = Math.floor(currentTime % 60);
+                            document.getElementById('progress-current').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                            
+                            // Format and show total track duration
+                            const totMins = Math.floor(duration / 60);
+                            const totSecs = Math.floor(duration % 60);
+                            document.getElementById('progress-total').textContent = `${totMins}:${totSecs < 10 ? '0' : ''}${totSecs}`;
+                        }
+                    }
+                }, 500);
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                isPlaying = false;
+                document.getElementById('play-svg').style.display = 'block';
+                document.getElementById('pause-svg').style.display = 'none';
+                if (playInterval) clearInterval(playInterval);
+            }
+        }
+
         function playSong(name, artist, colorCode) {
             isPlaying = true;
             currentTrackName = name;
@@ -2453,60 +2522,34 @@
 
             // Reset progress bar
             playProgress = 0;
-            totalPlaySeconds = 180; // Default simulated track length (3:00)
-            
-            // Adjust length slightly based on name to simulate varied track lengths
-            let charSum = 0;
-            for (let i = 0; i < name.length; i++) {
-                charSum += name.charCodeAt(i);
-            }
-            totalPlaySeconds += (charSum % 60); // 180 to 240 seconds (3:00 to 4:00)
-
-            const mins = Math.floor(totalPlaySeconds / 60);
-            const secs = totalPlaySeconds % 60;
-            document.getElementById('progress-total').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
             updateProgressBar();
 
             // Clear previous play timers and audios
             if (playInterval) clearInterval(playInterval);
             if (globalAudio) {
-                try {
-                    globalAudio.pause();
-                } catch(e){}
+                try { globalAudio.pause(); } catch(e){}
                 globalAudio = null;
             }
 
-            // Simulated progress increment interval (no real audio output)
-            playInterval = setInterval(() => {
-                if (isPlaying) {
-                    playProgress += (100 / totalPlaySeconds);
-                    if (playProgress >= 100) {
-                        playProgress = 100;
-                        isPlaying = false;
-                        document.getElementById('play-svg').style.display = 'block';
-                        document.getElementById('pause-svg').style.display = 'none';
-                        clearInterval(playInterval);
-                    }
-                    updateProgressBar();
+            // Find song details from catalog to extract the youtubeId
+            const song = MUSIC_CATALOG.find(s => s.name === name);
+            if (song && song.youtubeId && ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+                ytPlayer.loadVideoById(song.youtubeId);
+            } else {
+                console.warn("YouTube player not ready or video ID missing. Simulating instead.");
+                
+                // Fallback simulation if YouTube ID is not ready
+                totalPlaySeconds = 180;
+                let charSum = 0;
+                for (let i = 0; i < name.length; i++) {
+                    charSum += name.charCodeAt(i);
                 }
-            }, 1000);
-        }
+                totalPlaySeconds += (charSum % 60);
 
-        function playMockRepeatedTrack(name, artist) {
-            playSong(name, artist, '#1db954');
-        }
-
-        function togglePlayback() {
-            if (currentTrackName === "") {
-                return;
-            }
-            isPlaying = !isPlaying;
-
-            if (isPlaying) {
-                document.getElementById('play-svg').style.display = 'none';
-                document.getElementById('pause-svg').style.display = 'block';
-                // Resume simulation interval
-                if (playInterval) clearInterval(playInterval);
+                const mins = Math.floor(totalPlaySeconds / 60);
+                const secs = totalPlaySeconds % 60;
+                document.getElementById('progress-total').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                
                 playInterval = setInterval(() => {
                     if (isPlaying) {
                         playProgress += (100 / totalPlaySeconds);
@@ -2520,10 +2563,49 @@
                         updateProgressBar();
                     }
                 }, 1000);
+            }
+        }
+
+        function playMockRepeatedTrack(name, artist) {
+            playSong(name, artist, '#1db954');
+        }
+
+        function togglePlayback() {
+            if (currentTrackName === "") return;
+            
+            // Check if playing via YouTube player
+            const song = MUSIC_CATALOG.find(s => s.name === currentTrackName);
+            if (song && song.youtubeId && ytPlayer && typeof ytPlayer.playVideo === 'function') {
+                if (isPlaying) {
+                    ytPlayer.pauseVideo();
+                } else {
+                    ytPlayer.playVideo();
+                }
             } else {
-                document.getElementById('play-svg').style.display = 'block';
-                document.getElementById('pause-svg').style.display = 'none';
-                if (playInterval) clearInterval(playInterval);
+                // Fallback simulation controls
+                isPlaying = !isPlaying;
+                if (isPlaying) {
+                    document.getElementById('play-svg').style.display = 'none';
+                    document.getElementById('pause-svg').style.display = 'block';
+                    if (playInterval) clearInterval(playInterval);
+                    playInterval = setInterval(() => {
+                        if (isPlaying) {
+                            playProgress += (100 / totalPlaySeconds);
+                            if (playProgress >= 100) {
+                                playProgress = 100;
+                                isPlaying = false;
+                                document.getElementById('play-svg').style.display = 'block';
+                                document.getElementById('pause-svg').style.display = 'none';
+                                clearInterval(playInterval);
+                            }
+                            updateProgressBar();
+                        }
+                    }, 1000);
+                } else {
+                    document.getElementById('play-svg').style.display = 'block';
+                    document.getElementById('pause-svg').style.display = 'none';
+                    if (playInterval) clearInterval(playInterval);
+                }
             }
         }
 
@@ -2535,18 +2617,29 @@
             const width = rect.width;
             const percentage = clickX / width;
             
-            playProgress = percentage * 100;
-            updateProgressBar();
+            const song = MUSIC_CATALOG.find(s => s.name === currentTrackName);
+            if (song && song.youtubeId && ytPlayer && typeof ytPlayer.seekTo === 'function' && typeof ytPlayer.getDuration === 'function') {
+                const duration = ytPlayer.getDuration();
+                if (duration > 0) {
+                    ytPlayer.seekTo(percentage * duration, true);
+                }
+            } else {
+                // Fallback simulation seek
+                playProgress = percentage * 100;
+                updateProgressBar();
+            }
         }
 
         function updateProgressBar() {
             document.getElementById('progress-fill').style.width = playProgress + '%';
             
-            // Format current elapsed seconds
-            const currentSeconds = Math.floor((playProgress / 100) * totalPlaySeconds);
-            const mins = Math.floor(currentSeconds / 60);
-            const secs = currentSeconds % 60;
-            document.getElementById('progress-current').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            // For manual simulation time update formatting
+            if (!ytPlayer || typeof ytPlayer.getCurrentTime !== 'function') {
+                const currentSeconds = Math.floor((playProgress / 100) * totalPlaySeconds);
+                const mins = Math.floor(currentSeconds / 60);
+                const secs = currentSeconds % 60;
+                document.getElementById('progress-current').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
         }
 
         function renderCatalogTable() {
@@ -2627,6 +2720,9 @@
         }
     </script>
     
+    <!-- YouTube Player Container -->
+    <div id="yt-player" style="display: none;"></div>
+
     <!-- ONBOARDING MODAL POP-UP -->
     <div class="onboarding-overlay" id="onboarding-popup">
         <div class="onboarding-modal">
