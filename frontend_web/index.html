@@ -1838,6 +1838,7 @@
         let currentTrackArtist = "";
         let globalAudio = null;
         let ytPlayer = null;
+        let ytApiLoaded = false;
         
         let chatInitialized = false;
         let lastNonNativeState = false;
@@ -2445,9 +2446,22 @@
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         function onYouTubeIframeAPIReady() {
+            ytApiLoaded = true;
+            if (document.readyState === 'interactive' || document.readyState === 'complete') {
+                initYouTubePlayer();
+            }
+        }
+
+        function initYouTubePlayer() {
+            if (ytPlayer) return;
+            const container = document.getElementById('yt-player');
+            if (!container) {
+                console.warn("YouTube player container not found in DOM yet. Retrying shortly.");
+                return;
+            }
             ytPlayer = new YT.Player('yt-player', {
-                height: '0',
-                width: '0',
+                height: '1',
+                width: '1',
                 videoId: '',
                 playerVars: {
                     'playsinline': 1,
@@ -2692,6 +2706,11 @@
             // Render catalog table
             renderCatalogTable();
 
+            // Initialize YouTube player if API loaded
+            if (ytApiLoaded) {
+                initYouTubePlayer();
+            }
+
             // Run location request or prompt browser GPS
             try {
                 const realData = await detectRealLocationAndWeather();
@@ -2720,8 +2739,8 @@
         }
     </script>
     
-    <!-- YouTube Player Container -->
-    <div id="yt-player" style="display: none;"></div>
+    <!-- YouTube Player Container (must have tiny size and layout presence to load in Chrome/Safari) -->
+    <div id="yt-player" style="position: absolute; top: -9999px; left: -9999px; width: 4px; height: 4px; opacity: 0; pointer-events: none;"></div>
 
     <!-- ONBOARDING MODAL POP-UP -->
     <div class="onboarding-overlay" id="onboarding-popup">
